@@ -38,10 +38,8 @@
         "fullscreen": false,
         "resizable": true,
         "title": "turnip3-manager",
-        "width": 1280,
-        "height": 720,
-        "minWidth": 600,
-        "minHeight": 800
+        "minWidth": 854,
+        "minHeight": 480
       }
     ]
   }

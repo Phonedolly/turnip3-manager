@@ -50,17 +50,17 @@ export function Root() {
   });
   // mx-auto my-0 flex h-full w-full max-w-6xl flex-col items-center justify-between py-1
   return (
-    <div className="mx-0 h-full w-full max-w-6xl py-1">
+    <div className="mx-auto h-full w-full max-w-6xl py-1">
       <div
-        className={`fixed left-0 right-0 top-0 mx-auto ${
-          writingPost === true ? `bottom-16` : `h-12`
+        className={`fixed left-0 right-0 top-0 mx-auto max-w-6xl transition-all ${
+          writingPost === true ? `bottom-16 max-w-full` : `h-12`
         }`}
       >
         <div
-          className={`z-10 mx-8 my-6 flex flex-row justify-between rounded-2xl bg-white/30 shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)] transition-all duration-300 ease-in-out hover:scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] ${
+          className={`absolute left-0 right-0 top-0 z-10 mx-8 my-6 flex flex-row justify-between rounded-2xl bg-white/30 pt-1.5 shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)] transition-all duration-300 ease-in-out hover:scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)]  ${
             writingPost === true
-              ? `h-full items-start bg-white pt-1.5 hover:scale-100 hover:shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)]`
-              : `h-12 items-center`
+              ? `h-[calc(100vh-3rem)] items-start hover:scale-[1.0] bg-white/60 backdrop-blur-md hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)]`
+              : `h-12 items-start`
           }`}
         >
           <div className="flex w-full flex-row items-center transition-all">
@@ -82,7 +82,9 @@ export function Root() {
               ></path>
             </svg>
             <h1
-              className="text-md ml-0.5 flex h-full w-full cursor-text select-none flex-row items-center pl-0.5 italic text-neutral-600 duration-300 hover:animate-pulse"
+              className={`text-md ml-0.5 flex h-full w-full cursor-text select-none flex-row items-center pl-0.5 italic text-neutral-600 transition duration-700 hover:text-black ${
+                writingPost === true ? `opacity-0 cursor-default` : ``
+              }`}
               onClick={() => setWritingPost(true)}
             >
               Tap to Write Post
@@ -90,7 +92,7 @@ export function Root() {
           </div>
           {/* https://www.svgrepo.com/svg/510320/user */}
           <svg
-            className={`mr-2 h-9 w-9 cursor-pointer p-1 transition duration-300 ease-in-out hover:scale-110 hover:transition ${
+            className={`z-10 mr-2 h-9 w-9 cursor-pointer p-1 transition-all duration-300 ease-in-out hover:scale-110 ${
               writingPost === true ? `translate-x-0` : `translate-x-9`
             }`}
             xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +111,7 @@ export function Root() {
           {/* https://www.svgrepo.com/svg/503004/close */}
           <svg
             className={`mr-2 h-9 w-9 cursor-pointer p-1 transition-all duration-300 hover:scale-110 ${
-              writingPost === true ? `` : `opacity-0`
+              writingPost === true ? `z-0` : `opacity-0`
             }`}
             onClick={() => setWritingPost(false)}
             xmlns="http://www.w3.org/2000/svg"
@@ -128,7 +130,7 @@ export function Root() {
         </div>
       </div>
       <nav
-        className={`fixed left-3 z-[10] flex h-[90%] w-64 flex-col items-center justify-start rounded-2xl bg-white/40 shadow-[0_0px_38px_0px_rgba(0,0,0,0.3)] backdrop-blur-md duration-300 ease-in-out ${
+        className={`fixed left-3 z-10 top-6 flex h-[90%] w-64 flex-col items-center justify-start rounded-2xl bg-white/40 shadow-[0_0px_38px_0px_rgba(0,0,0,0.3)] backdrop-blur-md duration-300 ease-in-out ${
           showNavBar === true ? "translate-x-0" : "-translate-x-full opacity-0"
         }`}
         ref={ref}
@@ -201,7 +203,7 @@ export function Root() {
           </Link>
         ))}
       </nav>
-      <div className="mt-20 h-full w-full">
+      <div className="mt-20">
         <Outlet />
       </div>
     </div>

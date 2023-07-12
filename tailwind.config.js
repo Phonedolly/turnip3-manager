@@ -8,7 +8,9 @@ export default {
   theme: {
     extend: {
       animation: {
-        'header-helper-text': 'header-helper-text 1.4s ease 0s infinite normal forwards'
+        'header-helper-text': 'header-helper-text 1.4s ease 0s infinite normal forwards',
+        'enterance-from-top': 'enterance-from-top 0.3s ease-in-out 0s 1 normal forwards',
+        'enterance-from-center': 'enterance-from-top 0.3s ease-in-out 0s 1 normal forwards;'
       },
       fontFamily: {
         'sans': ['Spoqa Han Sans Neo', ...defaultTheme.fontFamily.sans],
@@ -36,6 +38,24 @@ export default {
           },
           '75%': {
             transform: 'translateX(-6px) rotate(-1.2deg)'
+          }
+        },
+        'enterance-from-top': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(-30px)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)'
+          }
+        },
+        'enterance-from-center': {
+          '0%': {
+            opacity: '0',
+          },
+          '100%': {
+            opacity: '1',
           }
         }
       }

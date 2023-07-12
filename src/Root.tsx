@@ -411,16 +411,18 @@ export function Root() {
   // mx-auto my-0 flex h-full w-full max-w-6xl flex-col items-center justify-between py-1
   return (
     <div className="mx-auto h-full w-full max-w-6xl py-1">
+      {/* Header Wrapper */}
       <div
         className={`fixed left-0 right-0 top-0 mx-auto max-w-6xl transition-all ${
-          writingPost === true ? `bottom-16 max-w-full` : `h-12`
+          writingPost === true ? `bottom-14 max-w-full` : `h-12`
         }`}
       >
+        {/* Header */}
         <div
-          className={`absolute left-0 right-0 top-0 z-10 mx-8 my-6 flex flex-row justify-between rounded-2xl bg-white/30 pt-1.5 shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)] transition-all duration-300 ease-in-out hover:scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)]  ${
+          className={`absolute left-0 right-0 top-0 z-10 mx-8 my-6 flex flex-row justify-between rounded-2xl bg-white/30 pt-1.5 shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)] transition-all duration-300 ease-in-out hover:scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] ${
             writingPost === true
-              ? `h-[calc(100vh-3rem)] scale-[1.004] items-start bg-white/60 backdrop-blur-md hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)]`
-              : `h-12 items-start`
+              ? `h-[90vh] scale-[1.004] bg-white/60 backdrop-blur-md hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)]`
+              : `h-12`
           }`}
         >
           <div
@@ -428,6 +430,7 @@ export function Root() {
               writingPost === true ? `h-full` : ``
             }`}
           >
+            {/* Menu Icon and Helper Text */}
             <div className="flex w-full flex-row">
               {/* https://www.svgrepo.com/svg/510067/menu */}
               <svg
@@ -493,7 +496,7 @@ export function Root() {
               </svg>
             </div>
             {writingPost === true ? (
-              <div className="flex h-full w-full flex-row justify-center relative -left-4">
+              <div className="relative -left-4 flex h-full w-full flex-row justify-center pb-4 pt-2">
                 <Editor
                   className="animate-enterance-from-top"
                   language="markdown"

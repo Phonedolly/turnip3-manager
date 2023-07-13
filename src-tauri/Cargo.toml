@@ -13,9 +13,11 @@ edition = "2021"
 tauri-build = { version = "1.4", features = [] }
 
 [dependencies]
-tauri = { version = "1.4", features = ["shell-open"] }
+tauri = { version = "1.4", features = [ "window-maximize", "window-unminimize", "window-close", "window-start-dragging", "window-unmaximize", "window-show", "window-hide", "window-minimize", "shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+window-shadows = "0.2.1"
+window-vibrancy = "0.4.0"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

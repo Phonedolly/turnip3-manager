@@ -33,7 +33,7 @@ export function Home() {
           </g>
         </svg> */}
         <h1 className="text-4xl font-bold">Welcome to</h1>
-        <h1 className="ml-3 rounded-2xl bg-neutral-200/90 px-3 py-2 font-mono text-4xl font-bold">
+        <h1 className="ml-3 rounded-2xl bg-neutral-300/60 px-3 py-2 font-mono text-4xl font-bold">
           turnip3
         </h1>
         <h1 className="ml-0.5 text-4xl font-bold">.</h1>

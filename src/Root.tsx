@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Outlet, Link, useLoaderData } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
+import { appWindow } from "@tauri-apps/api/window";
 
 export async function blogsLoader(): Promise<Blog[]> {
   return [
@@ -411,17 +412,89 @@ export function Root() {
   // mx-auto my-0 flex h-full w-full max-w-6xl flex-col items-center justify-between py-1
   return (
     <div className="mx-auto h-full w-full max-w-6xl py-1">
+      {/* Title Bar*/}
+      <div
+        className="fixed left-0 right-0 top-0 flex h-12 w-full flex-row items-center justify-between"
+        data-tauri-drag-region
+      >
+        <h1 className="text-md flex h-full select-none flex-row items-center px-3">
+          Turnip3 Manager
+        </h1>
+        {/* Icons */}
+        <div className="flex h-full flex-row items-center ">
+          {/* https://www.svgrepo.com/svg/511036/line-m */}
+          <svg
+            className="relative top-0.5 h-12 w-12 rotate-90 p-3 transition hover:bg-neutral-300/80"
+            onClick={() => appWindow.minimize()}
+            xmlns="http://www.w3.org/2000/svg"
+            width="800"
+            height="800"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <g>
+              <path
+                stroke="#000"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 17V7"
+              ></path>
+            </g>
+          </svg>
+          {/* https://www.svgrepo.com/svg/510963/dummy-square */}
+          <svg
+            className="h-12 w-12 p-3 transition hover:bg-neutral-300/80"
+            onClick={() => appWindow.toggleMaximize()}
+            xmlns="http://www.w3.org/2000/svg"
+            width="800"
+            height="800"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <g>
+              <path
+                stroke="#000"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 9.2v5.6c0 1.12 0 1.68.218 2.108a2 2 0 00.874.874c.427.218.987.218 2.105.218h5.606c1.118 0 1.677 0 2.104-.218.377-.192.683-.498.875-.874.218-.428.218-.987.218-2.104V9.197c0-1.118 0-1.678-.218-2.105a2.001 2.001 0 00-.875-.874C16.48 6 15.92 6 14.8 6H9.2c-1.12 0-1.68 0-2.108.218a1.999 1.999 0 00-.874.874C6 7.52 6 8.08 6 9.2z"
+              ></path>
+            </g>
+          </svg>
+          {/* https://www.svgrepo.com/svg/510924/close-md */}
+          <svg
+            className="h-12 w-12 p-3 transition hover:bg-red-500/95"
+            onClick={() => appWindow.close()}
+            xmlns="http://www.w3.org/2000/svg"
+            width="800"
+            height="800"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <g>
+              <path
+                stroke="#000"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M18 18l-6-6m0 0L6 6m6 6l6-6m-6 6l-6 6"
+              ></path>
+            </g>
+          </svg>
+        </div>
+      </div>
       {/* Header Wrapper */}
       <div
-        className={`fixed left-0 right-0 top-0 mx-auto max-w-6xl transition-all ${
-          writingPost === true ? `bottom-14 max-w-full` : `h-12`
+        className={`fixed left-0 right-0 top-8 mx-auto max-w-6xl transition-all ${
+          writingPost === true ? `bottom-14 max-w-full` : `h-auto`
         }`}
       >
         {/* Header */}
         <div
           className={`absolute left-0 right-0 top-0 z-10 mx-8 my-6 flex flex-row justify-between rounded-2xl bg-white/30 pt-1.5 shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)] transition-all duration-300 ease-in-out hover:scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] ${
             writingPost === true
-              ? `h-[90vh] scale-[1.004] bg-white/60 backdrop-blur-md hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)]`
+              ? `h-[90vh] scale-[1.004] bg-white hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)]`
               : `h-12`
           }`}
         >
@@ -503,6 +576,9 @@ export function Root() {
                   defaultValue={`# 새로운 포스트를 작성합니다!
 
 **turnip3-manager**는 MDX 형식으로 포스트를 작성합니다. MDX는 마크다운(Markdown) 포맷에 JSX 지원을 추가한 형식으로, 마크다운 문서 안에서 자유롭게 React Component를 사용하실 수 있습니다.
+
+## \`h2\` 태그와 동일합니다.
+### \`h3\` 태그와 동일합니다.
 `}
                   loading={null}
                   width={"100%"}
@@ -593,7 +669,7 @@ export function Root() {
           </Link>
         ))}
       </nav>
-      <div className="mt-20">
+      <div className="mt-28">
         <Outlet />
       </div>
     </div>

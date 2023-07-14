@@ -3,7 +3,7 @@ import { appWindow } from "@tauri-apps/api/window";
 export default function TitleBar() {
   return (
     <div
-      className="fixed left-0 right-0 top-0 flex h-11 w-full flex-row items-center justify-between"
+      className="sticky left-0 right-0 flex h-11 w-full flex-row items-center justify-between"
       data-tauri-drag-region
     >
       <div className="flex flex-row items-center justify-start">

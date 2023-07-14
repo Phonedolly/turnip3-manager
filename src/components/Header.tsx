@@ -378,7 +378,7 @@ export default function Header(props: {
       <div
         className={`absolute left-0 right-0 top-0 z-10 mx-8 my-6 flex flex-row justify-between rounded-2xl  bg-white/50 pt-1.5 shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)] backdrop-blur-xl transition-all duration-300 ease-in-out hover:scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] ${
           writingPost === true
-            ? `ml-0 mr-0 mt-3 h-[100vh] rounded-none shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] hover:scale-[1]`
+            ? `ml-0 mr-0 mt-4 h-[100vh] rounded-none shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] hover:scale-[1]`
             : `h-12`
         }`}
       >
@@ -410,7 +410,7 @@ export default function Header(props: {
                 ) : (
                   <svg
                     onClick={() => setShowNavBar(true)}
-                    className="ml-3 h-9 w-9 cursor-pointer p-1 transition-all duration-300 hover:scale-110 hover:transition"
+                    className="ml-3 h-9 w-9 cursor-pointer p-1 transition-all duration-300"
                     xmlns="http://www.w3.org/2000/svg"
                     width="800"
                     height="800"
@@ -444,7 +444,7 @@ export default function Header(props: {
               <div className="flex flex-row items-end justify-end">
                 {/* https://www.svgrepo.com/svg/510320/user */}
                 <svg
-                  className={`z-10 mr-2 h-9 w-9 cursor-pointer p-1 transition-all duration-300 ease-in-out hover:scale-110 ${
+                  className={`z-10 mr-2 h-9 w-9 cursor-pointer p-1 transition-all duration-300 ease-in-out ${
                     writingPost === true ? `translate-x-0` : `translate-x-9`
                   }`}
                   xmlns="http://www.w3.org/2000/svg"
@@ -462,7 +462,7 @@ export default function Header(props: {
                 </svg>
                 {/* https://www.svgrepo.com/svg/503004/close */}
                 <svg
-                  className={`-ml-1 mr-3 h-9 w-9 cursor-pointer p-1 transition-all duration-300 hover:scale-110 ${
+                  className={`-ml-1 mr-3 h-9 w-9 cursor-pointer p-1 transition-all duration-300 ${
                     writingPost === true ? `z-0` : `opacity-0`
                   }`}
                   onClick={() => setWritingPost(false)}

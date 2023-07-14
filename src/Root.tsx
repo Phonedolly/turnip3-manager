@@ -36,16 +36,18 @@ export function Root() {
   const [writingPost, setWritingPost] = useState<boolean>(false);
 
   return (
-    <div className="mx-auto h-full w-full max-w-6xl py-1">
+    <div className="h-[100vh] w-[100vw]">
       <TitleBar />
-      <NavBar
-        blogs={blogs}
-        showNavBar={showNavBar}
-        setShowNavBar={setShowNavBar}
-      />
-      <Header blogs={blogs} setShowNavBar={setShowNavBar} />
-      <div className="mt-28">
-        <Outlet />
+      <div className="mx-auto max-w-6xl">
+        <NavBar
+          blogs={blogs}
+          showNavBar={showNavBar}
+          setShowNavBar={setShowNavBar}
+        />
+        <Header blogs={blogs} setShowNavBar={setShowNavBar} />
+        <div className="h-[calc(100vh-2.75rem)] overflow-y-auto pt-16">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

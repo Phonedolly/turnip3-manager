@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Outlet, Link, useLoaderData } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
-import { appWindow } from "@tauri-apps/api/window";
+import TitleBar from "./components/TitleBar";
 
 export async function blogsLoader(): Promise<Blog[]> {
   return [
@@ -412,78 +412,7 @@ export function Root() {
   // mx-auto my-0 flex h-full w-full max-w-6xl flex-col items-center justify-between py-1
   return (
     <div className="mx-auto h-full w-full max-w-6xl py-1">
-      {/* Title Bar*/}
-      <div
-        className="fixed left-0 right-0 top-0 flex h-12 w-full flex-row items-center justify-between"
-        data-tauri-drag-region
-      >
-        <h1 className="text-md flex h-full select-none flex-row items-center px-3">
-          Turnip3 Manager
-        </h1>
-        {/* Icons */}
-        <div className="flex h-full flex-row items-center ">
-          {/* https://www.svgrepo.com/svg/511036/line-m */}
-          <svg
-            className="relative top-0.5 h-12 w-12 rotate-90 p-3 transition hover:bg-neutral-300/80"
-            onClick={() => appWindow.minimize()}
-            xmlns="http://www.w3.org/2000/svg"
-            width="800"
-            height="800"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <g>
-              <path
-                stroke="#000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 17V7"
-              ></path>
-            </g>
-          </svg>
-          {/* https://www.svgrepo.com/svg/510963/dummy-square */}
-          <svg
-            className="h-12 w-12 p-3 transition hover:bg-neutral-300/80"
-            onClick={() => appWindow.toggleMaximize()}
-            xmlns="http://www.w3.org/2000/svg"
-            width="800"
-            height="800"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <g>
-              <path
-                stroke="#000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 9.2v5.6c0 1.12 0 1.68.218 2.108a2 2 0 00.874.874c.427.218.987.218 2.105.218h5.606c1.118 0 1.677 0 2.104-.218.377-.192.683-.498.875-.874.218-.428.218-.987.218-2.104V9.197c0-1.118 0-1.678-.218-2.105a2.001 2.001 0 00-.875-.874C16.48 6 15.92 6 14.8 6H9.2c-1.12 0-1.68 0-2.108.218a1.999 1.999 0 00-.874.874C6 7.52 6 8.08 6 9.2z"
-              ></path>
-            </g>
-          </svg>
-          {/* https://www.svgrepo.com/svg/510924/close-md */}
-          <svg
-            className="h-12 w-12 p-3 transition hover:bg-red-500/95"
-            onClick={() => appWindow.close()}
-            xmlns="http://www.w3.org/2000/svg"
-            width="800"
-            height="800"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <g>
-              <path
-                stroke="#000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M18 18l-6-6m0 0L6 6m6 6l6-6m-6 6l-6 6"
-              ></path>
-            </g>
-          </svg>
-        </div>
-      </div>
+      <TitleBar />
       {/* Header Wrapper */}
       <div
         className={`fixed left-0 right-0 top-8 mx-auto max-w-6xl transition-all ${
@@ -492,9 +421,9 @@ export function Root() {
       >
         {/* Header */}
         <div
-          className={`absolute left-0 right-0 top-0 z-10 mx-8 my-6 flex flex-row justify-between rounded-2xl bg-white/30 pt-1.5 shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)] transition-all duration-300 ease-in-out hover:scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] ${
+          className={`absolute left-0 right-0 top-0 z-10 mx-8 my-6 flex flex-row justify-between rounded-2xl  bg-white/50 backdrop-blur-xl pt-1.5 shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)] transition-all duration-300 ease-in-out hover:scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] ${
             writingPost === true
-              ? `h-[90vh] scale-[1.004] bg-white hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)]`
+              ? `h-full scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)]`
               : `h-12`
           }`}
         >
@@ -596,7 +525,7 @@ export function Root() {
         </div>
       </div>
       <nav
-        className={`fixed left-3 top-6 z-10 flex h-[90%] w-64 flex-col items-center justify-start rounded-2xl bg-white/30 shadow-[0_0px_38px_0px_rgba(0,0,0,0.3)] backdrop-blur-md duration-300 ease-in-out ${
+        className={`fixed left-8 top-14 z-10 flex h-[80%] w-64 flex-col items-center justify-start rounded-2xl bg-white/50 backdrop-blur-xl shadow-[0_0px_38px_0px_rgba(0,0,0,0.3)] duration-300 ease-in-out ${
           showNavBar === true ? "translate-x-0" : "-translate-x-full opacity-0"
         }`}
         ref={ref}

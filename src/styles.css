@@ -77,6 +77,6 @@
     url("./fonts/CascadiaMonoItalic.woff2") format("woff2");
 }
 
-:root, html, body{
-  background-color: transparent;
+:root{
+  background-color: white;
 }

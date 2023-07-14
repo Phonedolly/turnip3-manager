@@ -33,6 +33,7 @@ export async function blogsLoader(): Promise<Blog[]> {
 export function Root() {
   const blogs = useLoaderData() as Blog[];
   const [showNavBar, setShowNavBar] = useState<boolean>(false);
+  const [writingPost, setWritingPost] = useState<boolean>(false);
 
   return (
     <div className="mx-auto h-full w-full max-w-6xl py-1">

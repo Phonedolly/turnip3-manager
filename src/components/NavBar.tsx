@@ -27,7 +27,7 @@ export default function NavBar(props: {
 
   return (
     <nav
-      className={`fixed left-8 top-14 z-10 flex h-[80%] w-64 flex-col items-center justify-start rounded-2xl bg-white/50 shadow-[0_0px_38px_0px_rgba(0,0,0,0.3)] backdrop-blur-xl duration-300 ease-in-out ${
+      className={`fixed left-8 top-14 z-20 flex h-[80%] w-64 flex-col items-center justify-start rounded-2xl bg-white/50 shadow-[0_0px_38px_0px_rgba(0,0,0,0.3)] backdrop-blur-xl duration-300 ease-in-out ${
         showNavBar === true ? "translate-x-0" : "-translate-x-full opacity-0"
       }`}
       ref={ref}

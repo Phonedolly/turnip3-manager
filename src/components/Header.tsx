@@ -370,7 +370,7 @@ export default function Header(props: {
   }, [monaco]);
   return (
     <div
-      className={`fixed left-0 right-0 top-8 mx-auto max-w-6xl transition-all ${
+      className={`fixed left-0 right-0 top-8 z-10 mx-auto max-w-6xl transition-all ${
         writingPost === true ? `bottom-0 top-6 max-w-full` : `h-auto`
       }`}
     >

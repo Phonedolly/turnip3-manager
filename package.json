@@ -12,6 +12,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.5.1",
     "@tauri-apps/api": "^1.4.0",
+    "framer-motion": "^10.12.21",
     "monaco-editor": "^0.40.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

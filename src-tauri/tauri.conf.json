@@ -52,7 +52,7 @@
         "title": "turnip3-manager",
         "transparent": true,
         "minWidth": 800,
-        "minHeight": 640
+        "minHeight": 600
       }
     ]
   }

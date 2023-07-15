@@ -2,8 +2,23 @@ import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 import { motion, AnimatePresence, useAnimate } from "framer-motion";
-import { compile, runSync, run, compileSync } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
+import * as provider from "@mdx-js/react";
+import { evaluate, evaluateSync , compileSync, runSync} from "@mdx-js/mdx";
+import Components from "../components/MDXComponents";
+
+function MDXContainer(plaintext: string) {
+  const code = String(compileSync(plaintext, {outputFormat:'function-body', development:false, rehypePlugins:[]}));
+
+  const {default :Content} = runSync(code, runtime);
+  // const { default: Content } = evaluateSync(plaintext, {
+  //   ...provider,
+  //   ...(runtime as any),
+  //   development: false,
+  // });
+
+  return Content;
+}
 
 export default function Header(props: {
   blogs: Blog[];
@@ -16,24 +31,15 @@ export default function Header(props: {
   ## \`h2\` 태그와 동일합니다.
   ### \`h3\` 태그와 동일합니다.
   `;
-
-  const code = String(
-    compileSync(initialMdx, {
-      outputFormat: "function-body",
-      development: false,
-    })
-  );
-  const { default: Content } = runSync(code, runtime);
-
   const { blogs, setShowNavBar } = props;
   const [writingPost, setWritingPost] = useState<boolean>(false);
+  const [mdx, setMdx] = useState<string>("");
   const [settingBtnScope, animateSettingBtn] = useAnimate();
   const [closeBtnScope, animateCloseBtn] = useAnimate();
   const [userBtnScope, animateUserBtn] = useAnimate();
-  const [compiledMdx, setCompiledMdx] = useState<any>(Content);
   const monaco = useMonaco();
 
-  useEffect(() => {}, []);
+  const Content = MDXContainer(mdx);
 
   useEffect(() => {
     if (!monaco) {
@@ -391,6 +397,7 @@ export default function Header(props: {
     });
     monaco.editor.setTheme("turnip3");
   }, [monaco]);
+
   return (
     <div
       className={`fixed left-0 right-0 top-8 z-10 mx-auto max-w-6xl transition-all ${
@@ -401,7 +408,7 @@ export default function Header(props: {
       <div
         className={`absolute left-0 right-0 top-0 mx-8 my-6 flex flex-row justify-between rounded-2xl  bg-white/50 pt-1.5 shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)] backdrop-blur-xl transition-all duration-300 ease-in-out hover:scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] ${
           writingPost === true
-            ? `ml-0 mr-0 mt-3 h-[100vh] rounded-none shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] hover:scale-[1]`
+            ? `ml-3 mr-3 mt-3 h-[calc(100vh-5rem)] rounded-2xl shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] hover:scale-[1]`
             : `h-12`
         }`}
       >
@@ -566,13 +573,12 @@ export default function Header(props: {
             </AnimatePresence>
           </div>
           {writingPost === true ? (
-            <div className=" grid h-[calc(100%-5rem)] w-full grid-cols-2 px-2 py-6 pt-2">
+            <div className=" grid w-full grid-cols-2 px-2 py-6 pt-1.5">
               <Editor
-                className="relative -left-4 animate-enterance-from-top"
+                className="relative -left-4 h-[calc(100vh-8.5rem)] animate-enterance-from-top"
                 language="markdown"
                 defaultValue={initialMdx}
                 loading={null}
-                width={"100%"}
                 theme="turnip3"
                 options={{
                   fontSize: 15,
@@ -580,19 +586,41 @@ export default function Header(props: {
                   minimap: { enabled: false },
                   wordWrap: "on",
                 }}
-                onChange={async (mdx) => {
-                  if (!mdx) {
-                    return;
-                  }
-                  const res = await compile(mdx, {
-                    outputFormat: "function-body",
-                    development: false,
-                  });
-                  const { default: newContent } = await run(res, runtime);
-                  setCompiledMdx(newContent);
+                onChange={(mdx) => {
+                  setMdx(mdx || "");
+                }}
+                onMount={() => {
+                  setMdx(initialMdx);
                 }}
               />
-              <div>{compiledMdx}</div>
+              <div className="h1 max-h-[calc(100vh-8.5rem)] animate-enterance-from-top overflow-y-auto px-4 py-2">
+                {/* {MDXContainer("?")({
+                  components: {
+                    h1: (props) => (
+                      <h1 {...props} className="text-bold text-4xl" />
+                    ),
+                  },
+                })} */}
+                <Content
+                  components={{
+                    h1: (props) => (
+                      <h1 {...props} className="my-1 py-2 text-4xl font-bold" />
+                    ),
+                    h2: (props) => (
+                      <h2 {...props} className="my-1 py-2 text-3xl font-bold" />
+                    ),
+                    h3: (props) => (
+                      <h3
+                        {...props}
+                        className="my-0.5 py-1.5 text-2xl font-bold"
+                      />
+                    ),
+                    h4: (props) => (
+                      <h4 {...props} className="text-1xl my-0 py-1 font-bold" />
+                    ),
+                  }}
+                />
+              </div>
             </div>
           ) : null}
         </div>

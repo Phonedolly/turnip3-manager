@@ -2,18 +2,38 @@ import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 import { motion, AnimatePresence, useAnimate } from "framer-motion";
+import { compile, runSync, run, compileSync } from "@mdx-js/mdx";
+import * as runtime from "react/jsx-runtime";
 
 export default function Header(props: {
   blogs: Blog[];
   setShowNavBar: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const initialMdx = `# 새로운 포스트를 작성합니다!
+
+  **turnip3-manager**는 MDX 형식으로 포스트를 작성합니다. MDX는 마크다운(Markdown) 포맷에 JSX 지원을 추가한 형식으로, 마크다운 문서 안에서 자유롭게 React Component를 사용하실 수 있습니다.
+  
+  ## \`h2\` 태그와 동일합니다.
+  ### \`h3\` 태그와 동일합니다.
+  `;
+
+  const code = String(
+    compileSync(initialMdx, {
+      outputFormat: "function-body",
+      development: false,
+    })
+  );
+  const { default: Content } = runSync(code, runtime);
+
   const { blogs, setShowNavBar } = props;
   const [writingPost, setWritingPost] = useState<boolean>(false);
   const [settingBtnScope, animateSettingBtn] = useAnimate();
   const [closeBtnScope, animateCloseBtn] = useAnimate();
   const [userBtnScope, animateUserBtn] = useAnimate();
-
+  const [compiledMdx, setCompiledMdx] = useState<any>(Content);
   const monaco = useMonaco();
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     if (!monaco) {
@@ -391,9 +411,17 @@ export default function Header(props: {
           }`}
         >
           {/* Menu Icon and Helper Text */}
-          <div className="flex w-full flex-row items-center justify-between">
+          <div
+            className={`flex w-full flex-row  justify-between ${
+              writingPost === true ? ` items-start` : `items-center`
+            }`}
+          >
             {/* https://www.svgrepo.com/svg/510067/menu */}
-            <div className="flex w-full flex-row items-center justify-start">
+            <div
+              className={`flex flex-row items-center justify-start ${
+                writingPost === true ? `w-1/2 pr-4` : `w-full`
+              }`}
+            >
               {writingPost === true ? (
                 <svg
                   className="ml-3 h-9 w-9 animate-pulse p-1.5"
@@ -431,9 +459,19 @@ export default function Header(props: {
               )}
               {writingPost === true ? (
                 <motion.input
-                  className="ml-2 flex h-7 w-full max-w-sm border-collapse cursor-text select-none flex-row items-center border-b-2 border-b-neutral-300 pl-0.5 text-[0.9rem] outline-none  transition-all hover:border-b-neutral-400 focus:border-b-neutral-400 focus:outline-none"
+                  className="ml-2 flex h-8 w-full max-w-sm border-collapse cursor-text select-none flex-row items-center rounded-md bg-neutral-200/80 pl-2 text-[0.9rem] outline-none  transition-all  focus:outline-none"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1, transition: { delay: 0.2 } }}
+                  whileHover={{
+                    scaleY: 1.04,
+                    scaleX: 1.02,
+                    transition: { duration: 0.2 },
+                  }}
+                  whileFocus={{
+                    scaleY: 1.04,
+                    scaleX: 1.02,
+                    transition: { duration: 0.2 },
+                  }}
                   defaultValue="Unsaved Post"
                 />
               ) : (
@@ -450,14 +488,16 @@ export default function Header(props: {
               {writingPost === true ? (
                 <div className="flex flex-row items-end justify-end">
                   <motion.svg
-                    className="z-50 h-9 w-9 cursor-pointer p-1 transition-all duration-300"
-                    initial={{ x: "5rem", rotate: 120, opacity: 0 }}
+                    className="z-50 h-9 w-9 cursor-pointer p-1.5"
+                    initial={{ scale: 0, rotate: 120, opacity: 0 }}
                     animate={{
-                      x: 0,
+                      scale: 1,
                       rotate: 0,
                       opacity: 1,
+                      transition: { duration: 0.3 },
                     }}
-                    exit={{ x: "5rem", rotate: 120, opacity: 0 }}
+                    whileHover={{ scale: 1.2, rotate: 45 }}
+                    exit={{ scale: 0, rotate: 120, opacity: 0 }}
                     xmlns="http://www.w3.org/2000/svg"
                     width="160"
                     height="160"
@@ -478,17 +518,19 @@ export default function Header(props: {
                   </motion.svg>
                   {/* https://www.svgrepo.com/svg/503004/close */}
                   <motion.svg
-                    className={`mr-3 h-9 w-9 cursor-pointer p-1 transition-all duration-300 hover:rotate-45`}
+                    className={`mr-1.5 h-9 w-9 cursor-pointer p-1`}
                     onClick={() => {
                       setWritingPost(false);
                     }}
-                    initial={{ x: "5rem", rotate: 120, opacity: 0 }}
+                    initial={{ scale: 0, rotate: 120, opacity: 0 }}
                     animate={{
-                      x: 0,
+                      scale: 1,
                       rotate: 0,
                       opacity: 1,
+                      transition: { duration: 0.3 },
                     }}
-                    exit={{ x: "5rem", rotate: 120, opacity: 0 }}
+                    whileHover={{ scale: 1.2 }}
+                    exit={{ scale: 0, rotate: 120, opacity: 0 }}
                     xmlns="http://www.w3.org/2000/svg"
                     width="800"
                     height="800"
@@ -528,13 +570,7 @@ export default function Header(props: {
               <Editor
                 className="relative -left-4 animate-enterance-from-top"
                 language="markdown"
-                defaultValue={`# 새로운 포스트를 작성합니다!
-
-**turnip3-manager**는 MDX 형식으로 포스트를 작성합니다. MDX는 마크다운(Markdown) 포맷에 JSX 지원을 추가한 형식으로, 마크다운 문서 안에서 자유롭게 React Component를 사용하실 수 있습니다.
-
-## \`h2\` 태그와 동일합니다.
-### \`h3\` 태그와 동일합니다.
-`}
+                defaultValue={initialMdx}
                 loading={null}
                 width={"100%"}
                 theme="turnip3"
@@ -544,8 +580,19 @@ export default function Header(props: {
                   minimap: { enabled: false },
                   wordWrap: "on",
                 }}
+                onChange={async (mdx) => {
+                  if (!mdx) {
+                    return;
+                  }
+                  const res = await compile(mdx, {
+                    outputFormat: "function-body",
+                    development: false,
+                  });
+                  const { default: newContent } = await run(res, runtime);
+                  setCompiledMdx(newContent);
+                }}
               />
-              <div>1111</div>
+              <div>{compiledMdx}</div>
             </div>
           ) : null}
         </div>

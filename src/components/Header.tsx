@@ -1,23 +1,45 @@
-import { useEffect, useRef, useState } from "react";
+import { cloneElement, useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 import { motion, AnimatePresence, useAnimate } from "framer-motion";
 import * as runtime from "react/jsx-runtime";
 import * as provider from "@mdx-js/react";
-import { evaluate, evaluateSync , compileSync, runSync} from "@mdx-js/mdx";
+import { MDXProvider } from "@mdx-js/react";
+import { evaluate, evaluateSync, compileSync, runSync } from "@mdx-js/mdx";
 import Components from "../components/MDXComponents";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github.css";
+import { MDXContent } from "mdx/types";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { github } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-function MDXContainer(plaintext: string) {
-  const code = String(compileSync(plaintext, {outputFormat:'function-body', development:false, rehypePlugins:[]}));
-
-  const {default :Content} = runSync(code, runtime);
-  // const { default: Content } = evaluateSync(plaintext, {
-  //   ...provider,
-  //   ...(runtime as any),
-  //   development: false,
-  // });
-
-  return Content;
+function code({ className, ...props }) {
+  const match = /language-(\w+)/.exec(className || "");
+  return match ? (
+    <SyntaxHighlighter
+      customStyle={{
+        borderRadius: "16px",
+        background: "#fafafa",
+        padding: "0.9rem 1.2rem",
+        boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+      }}
+      language={match[1]}
+      PreTag="div"
+      {...props}
+      lineProps={{
+        style: {
+          wordBreak: "break-all",
+          whiteSpace: "pre-wrap",
+          paddingLeft: 8,
+        },
+      }}
+      style={github}
+      showLineNumbers
+      wrapLines
+    />
+  ) : (
+    <code className={className} {...props} />
+  );
 }
 
 export default function Header(props: {
@@ -26,20 +48,27 @@ export default function Header(props: {
 }) {
   const initialMdx = `# 새로운 포스트를 작성합니다!
 
-  **turnip3-manager**는 MDX 형식으로 포스트를 작성합니다. MDX는 마크다운(Markdown) 포맷에 JSX 지원을 추가한 형식으로, 마크다운 문서 안에서 자유롭게 React Component를 사용하실 수 있습니다.
+**turnip3-manager**는 MDX 형식으로 포스트를 작성합니다. MDX는 마크다운(Markdown) 포맷에 JSX 지원을 추가한 형식으로, 마크다운 문서 안에서 자유롭게 React Component를 사용하실 수 있습니다.
   
-  ## \`h2\` 태그와 동일합니다.
-  ### \`h3\` 태그와 동일합니다.
-  `;
+## \`h2\` 태그와 동일합니다.
+### \`h3\` 태그와 동일합니다.
+
+\`\`\`c
+int main(int argc, char* argv[]) {
+    printf("Hello World %d~!", argc);
+    return 0;
+}
+\`\`\`
+`;
   const { blogs, setShowNavBar } = props;
   const [writingPost, setWritingPost] = useState<boolean>(false);
-  const [mdx, setMdx] = useState<string>("");
+  const [oldMdx, setOldMdx] = useState<string>(initialMdx);
+  const [mdx, setMdx] = useState<string>(initialMdx);
   const [settingBtnScope, animateSettingBtn] = useAnimate();
   const [closeBtnScope, animateCloseBtn] = useAnimate();
   const [userBtnScope, animateUserBtn] = useAnimate();
   const monaco = useMonaco();
-
-  const Content = MDXContainer(mdx);
+  const [Content, setContent] = useState<JSX.Element>(makeMdx(initialMdx));
 
   useEffect(() => {
     if (!monaco) {
@@ -398,6 +427,41 @@ export default function Header(props: {
     monaco.editor.setTheme("turnip3");
   }, [monaco]);
 
+  function makeMdx(newMdx: string) {
+    // const code = String(
+    //   compileSync(newMdx, {
+    //     outputFormat: "function-body",
+    //     development: false,
+    //     rehypePlugins: [rehypeHighlight],
+    //   })
+    // );
+
+    // const { default: Content } = runSync(code, runtime);
+    const { default: Content } = evaluateSync(newMdx, {
+      ...(runtime as any),
+      development: false,
+      rehypePlugins: [],
+    });
+
+    return Content({
+      components: {
+        h1: (props) => (
+          <h1 {...props} className="my-1 py-2 text-4xl font-bold" />
+        ),
+        h2: (props) => (
+          <h2 {...props} className="my-1 py-2 text-3xl font-bold" />
+        ),
+        h3: (props) => (
+          <h3 {...props} className="my-0.5 py-1.5 text-2xl font-bold" />
+        ),
+        h4: (props) => (
+          <h4 {...props} className="text-1xl my-0 py-1 font-bold " />
+        ),
+        code: code,
+      },
+    });
+  }
+
   return (
     <div
       className={`fixed left-0 right-0 top-8 z-10 mx-auto max-w-6xl transition-all ${
@@ -496,15 +560,14 @@ export default function Header(props: {
                 <div className="flex flex-row items-end justify-end">
                   <motion.svg
                     className="z-50 h-9 w-9 cursor-pointer p-1.5"
-                    initial={{ scale: 0, rotate: 120, opacity: 0 }}
+                    initial={{ scale: 0, rotate: 210, opacity: 0 }}
                     animate={{
                       scale: 1,
                       rotate: 0,
                       opacity: 1,
-                      transition: { duration: 0.3 },
                     }}
                     whileHover={{ scale: 1.2, rotate: 45 }}
-                    exit={{ scale: 0, rotate: 120, opacity: 0 }}
+                    exit={{ scale: 0, rotate: 210, opacity: 0 }}
                     xmlns="http://www.w3.org/2000/svg"
                     width="160"
                     height="160"
@@ -529,15 +592,14 @@ export default function Header(props: {
                     onClick={() => {
                       setWritingPost(false);
                     }}
-                    initial={{ scale: 0, rotate: 120, opacity: 0 }}
+                    initial={{ scale: 0, rotate: 210, opacity: 0 }}
                     animate={{
                       scale: 1,
                       rotate: 0,
                       opacity: 1,
-                      transition: { duration: 0.3 },
                     }}
                     whileHover={{ scale: 1.2 }}
-                    exit={{ scale: 0, rotate: 120, opacity: 0 }}
+                    exit={{ scale: 0, rotate: 210, opacity: 0 }}
                     xmlns="http://www.w3.org/2000/svg"
                     width="800"
                     height="800"
@@ -587,39 +649,24 @@ export default function Header(props: {
                   wordWrap: "on",
                 }}
                 onChange={(mdx) => {
-                  setMdx(mdx || "");
-                }}
-                onMount={() => {
-                  setMdx(initialMdx);
+                  console.log("new Input", mdx);
+                  // let res: MDXContent = (() => <></>) as MDXContent;
+                  try {
+                    const res = makeMdx(mdx || "");
+                    console.log("MDX Compile success!");
+                    setContent(res);
+
+                    console.log("Apply Success");
+                  } catch (e) {
+                    console.error(e);
+                    console.log("MDX compile error!");
+                  }
+
+                  // setMdx(mdx || "");
                 }}
               />
-              <div className="h1 max-h-[calc(100vh-8.5rem)] animate-enterance-from-top overflow-y-auto px-4 py-2">
-                {/* {MDXContainer("?")({
-                  components: {
-                    h1: (props) => (
-                      <h1 {...props} className="text-bold text-4xl" />
-                    ),
-                  },
-                })} */}
-                <Content
-                  components={{
-                    h1: (props) => (
-                      <h1 {...props} className="my-1 py-2 text-4xl font-bold" />
-                    ),
-                    h2: (props) => (
-                      <h2 {...props} className="my-1 py-2 text-3xl font-bold" />
-                    ),
-                    h3: (props) => (
-                      <h3
-                        {...props}
-                        className="my-0.5 py-1.5 text-2xl font-bold"
-                      />
-                    ),
-                    h4: (props) => (
-                      <h4 {...props} className="text-1xl my-0 py-1 font-bold" />
-                    ),
-                  }}
-                />
+              <div className="h1 max-h-[calc(100vh-8.5rem)] animate-enterance-from-top overflow-y-auto px-4 pb-5 pt-1">
+                {Content}
               </div>
             </div>
           ) : null}

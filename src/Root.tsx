@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Outlet, Link, useLoaderData } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import TitleBar from "./components/TitleBar";
-import Header from "./components/Header";
+import Header from "./components/Header/Header";
 import NavBar from "./components/NavBar";
 
 export async function blogsLoader(): Promise<Blog[]> {

@@ -1,10 +1,10 @@
 import { cloneElement, useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
-import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
-import { motion, AnimatePresence, useAnimate } from "framer-motion";
+import Editor, { useMonaco } from "@monaco-editor/react";
+import { motion, AnimatePresence } from "framer-motion";
 import * as runtime from "react/jsx-runtime";
 import { evaluateSync } from "@mdx-js/mdx";
-import Components from "../components/MDXComponents";
+import components from "../MDXComponents/MDXComponents";
 import "highlight.js/styles/github.css";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
@@ -13,8 +13,6 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import rehypeMdxCodeProps from "rehype-mdx-code-props";
 import remarkGfm from "remark-gfm";
-import { Highlight, themes } from "prism-react-renderer";
-import rangeParser from "parse-numeric-range";
 
 export default function Header(props: {
   blogs: Blog[];
@@ -66,16 +64,21 @@ for (let i = 1; i <= 100; i++) {
 }
 \`\`\`
 `;
+  const initialCompiledMdx = makeMdx(initialMdx);
   const { blogs, setShowNavBar } = props;
   const [writingPost, setWritingPost] = useState<boolean>(false);
-  const [mdxTitle, setMdxTitle] = useState<string>("");
-  const [mdxDate, setMdxDate] = useState<string>("");
+  const [mdxTitle, setMdxTitle] = useState<string>(
+    initialCompiledMdx.frontmatter?.title || ""
+  );
+  const [mdxDate, setMdxDate] = useState<string>(
+    initialCompiledMdx.frontmatter?.date || ""
+  );
   // const [settingBtnScope, animateSettingBtn] = useAnimate();
   // const [closeBtnScope, animateCloseBtn] = useAnimate();
   // const [userBtnScope, animateUserBtn] = useAnimate();
   const monaco = useMonaco();
   const [Content, setContent] = useState<JSX.Element>(
-    makeMdx(initialMdx).content
+    initialCompiledMdx.content
   );
   const [mdxHasProblem, setMdxHasProblem] = useState<boolean>(false);
 
@@ -436,15 +439,6 @@ for (let i = 1; i <= 100; i++) {
     monaco.editor.setTheme("turnip3");
   }, [monaco]);
 
-  const calculateLinesToHighlight = (raw: string) => {
-    const lineNumbers = rangeParser(raw);
-    if (lineNumbers) {
-      return (index: number) => lineNumbers.includes(index + 1);
-    } else {
-      return () => false;
-    }
-  };
-
   function makeMdx(newMdx: string) {
     const { default: compiledMdx, frontmatter } = evaluateSync(newMdx, {
       ...(runtime as any),
@@ -459,135 +453,7 @@ for (let i = 1; i <= 100; i++) {
     });
     console.log(frontmatter);
     const content = compiledMdx({
-      components: {
-        h1: (props) => (
-          <h1 {...props} className="my-1 py-2 text-3xl font-bold" />
-        ),
-        h2: (props) => (
-          <h2 {...props} className="my-1 py-2 text-2xl font-bold" />
-        ),
-        h3: (props) => (
-          <h3 {...props} className="my-0.5 py-1.5 text-xl font-bold" />
-        ),
-        h4: (props) => (
-          <h4 {...props} className="my-0 py-1 text-lg font-bold " />
-        ),
-        pre: (props) => {
-          console.log(props);
-          const langClassName = props.children?.props?.className || "";
-          const code = props.children?.props.children?.trim() || "";
-          const language = langClassName.replace(/language-/, "");
-          const file = props?.file || "";
-          const showLineNumber = props?.showLineNumber || false;
-          const highlights =
-            props?.highlights && props.highlights.length > 0
-              ? calculateLinesToHighlight(props.highlights)
-              : () => false;
-          return (
-            <div className="my-8 flex flex-col gap-2 rounded-md bg-neutral-100 shadow-[0_7px_24px_4px_rgba(0,0,0,0.25)]">
-              <div className="flex flex-row items-center">
-                <div className="text-md mx-3 rounded-md bg-neutral-400 px-3 py-0.5 text-center font-bold text-white">{`${language}`}</div>
-                <div className="flex items-center justify-center font-mono text-[0.95rem] text-neutral-400">
-                  {file && `${file}`}
-                </div>
-              </div>
-              <div className="overflow-auto">
-                <Highlight
-                  // {...defaultProps}
-                  code={code}
-                  language={language}
-                  theme={themes.github}
-                >
-                  {({
-                    className,
-                    style,
-                    tokens,
-                    getLineProps,
-                    getTokenProps,
-                  }) => (
-                    <pre
-                      className={className}
-                      style={{
-                        ...style,
-                        backgroundColor: "transparent",
-                        float: "left",
-                        minWidth: "100%",
-                      }}
-                    >
-                      {tokens.map((line, i) => (
-                        <div
-                          {...getLineProps({ line, key: i })}
-                          className={`block px-6 last:rounded-b-md ${
-                            highlights(i) === true
-                              ? `bg-red-100 hover:saturate-200`
-                              : `hover:bg-neutral-200/70 hover:saturate-200`
-                          }`}
-                        >
-                          <div className="flex flex-row">
-                            {showLineNumber === true ? (
-                              <h1 className="mr-4 select-none text-neutral-400">
-                                {i + 1}
-                              </h1>
-                            ) : null}
-                            <div className="px-1">
-                              {line.map((token, key) => (
-                                <span
-                                  key={key}
-                                  {...getTokenProps({ token, key })}
-                                  className="font-[Spoqa Han Sans Neo] whitespace-pre-wrap rounded-none font-mono text-[0.9rem]"
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </pre>
-                  )}
-                </Highlight>
-              </div>
-            </div>
-          );
-        },
-        span: (props) => {
-          console.log(props.className);
-          console.log(props.style);
-          if (props.className?.includes("math math-inline")) {
-            return (
-              <span {...props} className={`${props.className} select-none`} />
-            );
-          } else if (props.className === "katex-display") {
-            return (
-              <span
-                {...props}
-                className={`${props.className} mx-0 my-2 overflow-hidden overflow-x-auto`}
-              />
-            );
-          } else if (props.className === "katex") {
-            return (
-              <span
-                {...props}
-                className={`${props.className} whitespace-normal`}
-              />
-            );
-          } else if (props.className === "base") {
-            return (
-              <span {...props} className={`${props.className} mx-0 my-1`} />
-            );
-          } else {
-            return <span {...props} />;
-          }
-        },
-        div: (props) => {
-          if (props.className?.includes("math math-display")) {
-            return (
-              <div {...props} className={`${props.className} select-none`} />
-            );
-          } else {
-            return <div {...props} />;
-          }
-        },
-        a: (props) => <a {...props} />,
-      },
+      components,
     });
     return {
       content,
@@ -791,8 +657,6 @@ for (let i = 1; i <= 100; i++) {
                     );
                     console.log("MDX Compile success!");
                     setContent(compiledMdx);
-                    setMdxTitle(frontmatter?.title || "");
-                    setMdxDate(frontmatter?.date || "");
                     setMdxHasProblem(false);
                     console.log("Apply Success");
                   } catch (e) {

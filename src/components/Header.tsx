@@ -503,51 +503,12 @@ int main()
                 }}
               >
                 <div style={{ display: "flex", position: "relative" }}>
-                  <div
-                    style={{
-                      background: "#a3a3a3",
-                      margin: "0.3rem 0.6rem 0.3rem 0.3rem",
-                      // marginRight: "0.5rem",
-                      paddingLeft: "0.8rem",
-                      paddingRight: "0.8rem",
-                      // textTransform: "uppercase",
-                      // borderTopLeftRadius: "0.5rem",
-                      // borderBottomLeftRadius: "0.5rem",
-                      // borderBottomRightRadius: "0.5rem",
-                      borderRadius: "0.5rem",
-                      // fontFamily: "Montserrat",
-                      fontFamily: "Cascadia Mono",
-                      fontWeight: "bold",
-                      fontSize: "1.2rem",
-                      textAlign: "center",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      color: "white",
-                    }}
-                  >{`${language}`}</div>
-                  <div
-                    style={{
-                      color: "#737373",
-                      // fontFamily: "Montserrat",
-                      // fontStyle: "italic",
-                      fontFamily: "Cascadia Mono",
-                      fontSize: "1rem",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
+                  <div className="mx-3 my-3 flex items-center justify-center rounded-md bg-neutral-400 px-3 text-center font-mono text-lg font-bold text-white">{`${language}`}</div>
+                  <div className="flex italic items-center justify-center font-mono text-base text-neutral-500">
                     {file && `${file}`}
                   </div>
                 </div>
-                <div
-                  style={{
-                    overflow: "auto",
-         
-                    // borderRadius: "0.5rem",
-                  }}
-                >
+                <div className="overflow-auto">
                   <Highlight
                     // {...defaultProps}
                     code={code}
@@ -573,13 +534,11 @@ int main()
                         {tokens.map((line, i) => (
                           <div
                             {...getLineProps({ line, key: i })}
-                            style={{
-                              background: highlights(i)
-                                ? "#fee2e2"
-                                : "transparent",
-                              display: "block",
-                              padding: "0.13rem 1rem",
-                            }}
+                            className={`block px-6 last:rounded-b-md hover:scale-y-[1.01] ${
+                              highlights(i) === true
+                                ? `bg-red-100 hover:saturate-150`
+                                : `hover: hover:bg-neutral-200/80`
+                            }`}
                           >
                             <div className="flex flex-row">
                               {showLineNumber === true ? (
@@ -592,7 +551,7 @@ int main()
                                   <span
                                     key={key}
                                     {...getTokenProps({ token, key })}
-                                    className="whitespace-pre-wrap text-[0.9rem] rounded-none"
+                                    className="whitespace-pre-wrap rounded-none text-[0.9rem]"
                                   />
                                 ))}
                               </div>

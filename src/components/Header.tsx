@@ -3,15 +3,16 @@ import { v4 as uuid } from "uuid";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 import { motion, AnimatePresence, useAnimate } from "framer-motion";
 import * as runtime from "react/jsx-runtime";
-import * as provider from "@mdx-js/react";
-import { MDXProvider } from "@mdx-js/react";
-import { evaluate, evaluateSync, compileSync, runSync } from "@mdx-js/mdx";
+import { evaluateSync } from "@mdx-js/mdx";
 import Components from "../components/MDXComponents";
 import "highlight.js/styles/github.css";
-import { MDXContent } from "mdx/types";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import rehypeMdxCodeProps from "rehype-mdx-code-props";
+import remarkGfm from "remark-gfm";
 import { Highlight, themes } from "prism-react-renderer";
 import rangeParser from "parse-numeric-range";
 
@@ -33,61 +34,50 @@ export default function Header(props: {
   // }
   // \`\`\`
   // `;
-  //   const initialMdx = `---
-  // title: Trying out new custom code blocks
-  // date: "2021-11-02"
-  // description: "A great way to display your code snippets on your MDX+Gatsby blog."
-  // ---
+  const initialMdx = `---
+title: Trying out new custom code blocks
+date: "2021-11-02"
+description: "A great way to display your code snippets on your MDX+Gatsby blog."
+---
 
-  // Here's an example of my new custom code blocks:
+Here's an example of my new custom code blocks:
 
-  // \`\`\`jsx
-  // // here's a button in React!
-  // <button
-  //   onClick={() => {
-  //     alert("Hello MDX!");
-  //   }}
-  // >
-  //   test
-  // </button>
-  // \`\`\`
+\`\`\`jsx
+// here's a button in React!
+<button
+  onClick={() => {
+    alert("Hello MDX!");
+  }}
+>
+  test
+</button>
+\`\`\`
 
-  // Wow! Such code snippets!
-  // Let's see another, with line highlighting:
+Wow! Such code snippets!
+Let's see another, with line highlighting:
 
-  // \`\`\`js
-  // // fizzbuzz in JS
-  // for (let i = 1; i <= 100; i++) {
-  //   let out = "";
-  //   if (i % 3 === 0) out += "Fizz";
-  //   if (i % 5 === 0) out += "Buzz";
-  //   console.log(out || i);
-  // }
-  // \`\`\`
-  // `;
-  const initialMdx = `
-\`\`\`c highlights="1,3-5"
-int main()
-
-
-
-
-
+\`\`\`js
+// fizzbuzz in JS
+for (let i = 1; i <= 100; i++) {
+  let out = "";
+  if (i % 3 === 0) out += "Fizz";
+  if (i % 5 === 0) out += "Buzz";
+  console.log(out || i);
+}
 \`\`\`
 `;
-
   const { blogs, setShowNavBar } = props;
   const [writingPost, setWritingPost] = useState<boolean>(false);
-  const [oldMdx, setOldMdx] = useState<string>(initialMdx);
-  const [mdx, setMdx] = useState<string>(initialMdx);
   const [mdxTitle, setMdxTitle] = useState<string>("");
-  const [settingBtnScope, animateSettingBtn] = useAnimate();
-  const [closeBtnScope, animateCloseBtn] = useAnimate();
-  const [userBtnScope, animateUserBtn] = useAnimate();
+  const [mdxDate, setMdxDate] = useState<string>("");
+  // const [settingBtnScope, animateSettingBtn] = useAnimate();
+  // const [closeBtnScope, animateCloseBtn] = useAnimate();
+  // const [userBtnScope, animateUserBtn] = useAnimate();
   const monaco = useMonaco();
   const [Content, setContent] = useState<JSX.Element>(
-    makeMdx(initialMdx).compiledMdx
+    makeMdx(initialMdx).content
   );
+  const [mdxHasProblem, setMdxHasProblem] = useState<boolean>(false);
 
   useEffect(() => {
     if (!monaco) {
@@ -456,118 +446,122 @@ int main()
   };
 
   function makeMdx(newMdx: string) {
-    let { default: compiledMdx, frontmatter } = evaluateSync(newMdx, {
+    const { default: compiledMdx, frontmatter } = evaluateSync(newMdx, {
       ...(runtime as any),
       development: false,
-      rehypePlugins: [rehypeMdxCodeProps],
-      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+      rehypePlugins: [rehypeMdxCodeProps, rehypeKatex],
+      remarkPlugins: [
+        remarkGfm,
+        remarkMath,
+        remarkFrontmatter,
+        remarkMdxFrontmatter,
+      ],
     });
-
     console.log(frontmatter);
-    // setMdxTitle(frontmatter?.title);
-    return {
-      compiledMdx: compiledMdx({
-        components: {
-          h1: (props) => (
-            <h1 {...props} className="my-1 py-2 text-3xl font-bold" />
-          ),
-          h2: (props) => (
-            <h2 {...props} className="my-1 py-2 text-2xl font-bold" />
-          ),
-          h3: (props) => (
-            <h3 {...props} className="my-0.5 py-1.5 text-xl font-bold" />
-          ),
-          h4: (props) => (
-            <h4 {...props} className="my-0 py-1 text-lg font-bold " />
-          ),
-          pre: (props) => {
-            console.log(props);
-            const langClassName = props.children?.props?.className || "";
-            const code = props.children?.props.children?.trim() || "";
-            const language = langClassName.replace(/language-/, "");
-            const file = props?.file;
-            const showLineNumber = props?.showLineNumber || false;
-            const highlights = calculateLinesToHighlight(
-              props?.highlights || ""
-            );
-            return (
-              <div
-                style={{
-                  background: "#f5f5f5",
-                  borderRadius: "0.5rem",
-                  marginTop: "2rem",
-                  marginBottom: "2rem",
-                  paddingLeft: "0rem",
-                  boxShadow:
-                    "rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px",
-                }}
-              >
-                <div style={{ display: "flex", position: "relative" }}>
-                  <div className="mx-3 my-3 flex items-center justify-center rounded-md bg-neutral-400 px-3 text-center font-mono text-lg font-bold text-white">{`${language}`}</div>
-                  <div className="flex italic items-center justify-center font-mono text-base text-neutral-500">
-                    {file && `${file}`}
-                  </div>
-                </div>
-                <div className="overflow-auto">
-                  <Highlight
-                    // {...defaultProps}
-                    code={code}
-                    language={language}
-                    theme={themes.github}
-                  >
-                    {({
-                      className,
-                      style,
-                      tokens,
-                      getLineProps,
-                      getTokenProps,
-                    }) => (
-                      <pre
-                        className={className}
-                        style={{
-                          ...style,
-                          backgroundColor: "transparent",
-                          float: "left",
-                          minWidth: "100%",
-                        }}
-                      >
-                        {tokens.map((line, i) => (
-                          <div
-                            {...getLineProps({ line, key: i })}
-                            className={`block px-6 last:rounded-b-md hover:scale-y-[1.01] ${
-                              highlights(i) === true
-                                ? `bg-red-100 hover:saturate-150`
-                                : `hover: hover:bg-neutral-200/80`
-                            }`}
-                          >
-                            <div className="flex flex-row">
-                              {showLineNumber === true ? (
-                                <h1 className="mr-4 text-neutral-400">
-                                  {i + 1}
-                                </h1>
-                              ) : null}
-                              <div>
-                                {line.map((token, key) => (
-                                  <span
-                                    key={key}
-                                    {...getTokenProps({ token, key })}
-                                    className="whitespace-pre-wrap rounded-none text-[0.9rem]"
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </pre>
-                    )}
-                  </Highlight>
+    const content = compiledMdx({
+      components: {
+        h1: (props) => (
+          <h1 {...props} className="my-1 py-2 text-3xl font-bold" />
+        ),
+        h2: (props) => (
+          <h2 {...props} className="my-1 py-2 text-2xl font-bold" />
+        ),
+        h3: (props) => (
+          <h3 {...props} className="my-0.5 py-1.5 text-xl font-bold" />
+        ),
+        h4: (props) => (
+          <h4 {...props} className="my-0 py-1 text-lg font-bold " />
+        ),
+        pre: (props) => {
+          console.log(props);
+          const langClassName = props.children?.props?.className || "";
+          const code = props.children?.props.children?.trim() || "";
+          const language = langClassName.replace(/language-/, "");
+          const file = props?.file || "";
+          const showLineNumber = props?.showLineNumber || false;
+          const highlights =
+            props?.highlights && props.highlights.length > 0
+              ? calculateLinesToHighlight(props.highlights)
+              : () => false;
+          return (
+            <div className="my-8 flex flex-col gap-2 rounded-md bg-neutral-100 shadow-[0_7px_24px_4px_rgba(0,0,0,0.25)]">
+              <div className="flex flex-row items-center">
+                <div className="text-md mx-3 rounded-md bg-neutral-400 px-3 py-0.5 text-center font-bold text-white">{`${language}`}</div>
+                <div className="flex items-center justify-center font-mono text-[0.95rem] text-neutral-400">
+                  {file && `${file}`}
                 </div>
               </div>
-            );
-          },
-          wrapper: ({ children }) => <>{children}</>,
+              <div className="overflow-auto">
+                <Highlight
+                  // {...defaultProps}
+                  code={code}
+                  language={language}
+                  theme={themes.github}
+                >
+                  {({
+                    className,
+                    style,
+                    tokens,
+                    getLineProps,
+                    getTokenProps,
+                  }) => (
+                    <pre
+                      className={className}
+                      style={{
+                        ...style,
+                        backgroundColor: "transparent",
+                        float: "left",
+                        minWidth: "100%",
+                      }}
+                    >
+                      {tokens.map((line, i) => (
+                        <div
+                          {...getLineProps({ line, key: i })}
+                          className={`block px-6 last:rounded-b-md ${
+                            highlights(i) === true
+                              ? `bg-red-100 hover:saturate-200`
+                              : `hover:bg-neutral-200/70 hover:saturate-200`
+                          }`}
+                        >
+                          <div className="flex flex-row">
+                            {showLineNumber === true ? (
+                              <h1 className="mr-4 select-none text-neutral-400">
+                                {i + 1}
+                              </h1>
+                            ) : null}
+                            <div className="px-1">
+                              {line.map((token, key) => (
+                                <span
+                                  key={key}
+                                  {...getTokenProps({ token, key })}
+                                  className="font-[Spoqa Han Sans Neo] whitespace-pre-wrap rounded-none font-mono text-[0.9rem]"
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </pre>
+                  )}
+                </Highlight>
+              </div>
+            </div>
+          );
         },
-      }),
+        span: (props) => {
+          console.log(props.className);
+          console.log(props.style);
+          if (props.className === "mspace newline") {
+            return <span {...props} className={`py-1.5 ${`mspace newline`}`} />;
+          } else {
+            return <span {...props} />;
+          }
+        },
+        a: (props) => <a {...props} />,
+      },
+    });
+    return {
+      content,
       frontmatter,
     };
   }
@@ -763,12 +757,17 @@ int main()
                   console.log("new Input", mdx);
                   // let res: MDXContent = (() => <></>) as MDXContent;
                   try {
-                    const { compiledMdx, frontmatter } = makeMdx(mdx || "");
+                    const { content: compiledMdx, frontmatter } = makeMdx(
+                      mdx || ""
+                    );
                     console.log("MDX Compile success!");
                     setContent(compiledMdx);
-                    setMdxTitle(frontmatter?.title);
+                    setMdxTitle(frontmatter?.title || "");
+                    setMdxDate(frontmatter?.date || "");
+                    setMdxHasProblem(false);
                     console.log("Apply Success");
                   } catch (e) {
+                    setMdxHasProblem(true);
                     console.error(e);
                     console.log("MDX compile error!");
                   }
@@ -776,9 +775,22 @@ int main()
                   // setMdx(mdx || "");
                 }}
               />
-              <div className="h1 max-h-[calc(100vh-8.5rem)] animate-enterance-from-top overflow-y-auto px-7 pb-5 pt-1">
-                <h1 className="py-2 text-4xl font-bold">{mdxTitle}</h1>
-                <div className="flex flex-col pt-3">{Content}</div>
+              <div className="h1 max-h-[calc(100vh-8.5rem)] animate-enterance-from-top overflow-y-auto px-7 py-1">
+                {mdxHasProblem === true ? (
+                  <h1 className="text-md flex animate-pulse flex-row items-center justify-center rounded-md bg-red-200/60 px-0.5 py-1 font-mono font-bold text-red-500">
+                    Now MDX File Has a Problem!
+                  </h1>
+                ) : null}
+                {mdxTitle && mdxTitle.length > 0 ? (
+                  <h1 className="py-2 text-4xl font-bold">{mdxTitle}</h1>
+                ) : null}
+                {mdxDate && mdxDate.length > 0 ? (
+                  <h4 className="text-baseline py-2 font-bold">{mdxDate}</h4>
+                ) : null}
+
+                <div className="flex flex-col [&>:not(first)]:pt-3">
+                  {Content}
+                </div>
               </div>
             </div>
           ) : null}

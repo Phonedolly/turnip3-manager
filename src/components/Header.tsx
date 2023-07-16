@@ -544,8 +544,8 @@ int main()
                 <div
                   style={{
                     overflow: "auto",
-                    background: "#f5f5f5",
-                    borderRadius: "0.5rem",
+         
+                    // borderRadius: "0.5rem",
                   }}
                 >
                   <Highlight
@@ -592,7 +592,7 @@ int main()
                                   <span
                                     key={key}
                                     {...getTokenProps({ token, key })}
-                                    className="whitespace-pre-wrap text-[0.9rem]"
+                                    className="whitespace-pre-wrap text-[0.9rem] rounded-none"
                                   />
                                 ))}
                               </div>

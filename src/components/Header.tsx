@@ -551,10 +551,39 @@ for (let i = 1; i <= 100; i++) {
         span: (props) => {
           console.log(props.className);
           console.log(props.style);
-          if (props.className === "mspace newline") {
-            return <span {...props} className={`py-1.5 ${`mspace newline`}`} />;
+          if (props.className?.includes("math math-inline")) {
+            return (
+              <span {...props} className={`${props.className} select-none`} />
+            );
+          } else if (props.className === "katex-display") {
+            return (
+              <span
+                {...props}
+                className={`${props.className} mx-0 my-2 overflow-hidden overflow-x-auto`}
+              />
+            );
+          } else if (props.className === "katex") {
+            return (
+              <span
+                {...props}
+                className={`${props.className} whitespace-normal`}
+              />
+            );
+          } else if (props.className === "base") {
+            return (
+              <span {...props} className={`${props.className} mx-0 my-1`} />
+            );
           } else {
             return <span {...props} />;
+          }
+        },
+        div: (props) => {
+          if (props.className?.includes("math math-display")) {
+            return (
+              <div {...props} className={`${props.className} select-none`} />
+            );
+          } else {
+            return <div {...props} />;
           }
         },
         a: (props) => <a {...props} />,

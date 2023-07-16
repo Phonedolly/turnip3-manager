@@ -7,68 +7,87 @@ import * as provider from "@mdx-js/react";
 import { MDXProvider } from "@mdx-js/react";
 import { evaluate, evaluateSync, compileSync, runSync } from "@mdx-js/mdx";
 import Components from "../components/MDXComponents";
-import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github.css";
 import { MDXContent } from "mdx/types";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { github } from "react-syntax-highlighter/dist/esm/styles/hljs";
-
-function code({ className, ...props }) {
-  const match = /language-(\w+)/.exec(className || "");
-  return match ? (
-    <SyntaxHighlighter
-      customStyle={{
-        borderRadius: "16px",
-        background: "#fafafa",
-        padding: "0.9rem 1.2rem",
-        boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-      }}
-      language={match[1]}
-      PreTag="div"
-      {...props}
-      lineProps={{
-        style: {
-          wordBreak: "break-all",
-          whiteSpace: "pre-wrap",
-          paddingLeft: 8,
-        },
-      }}
-      style={github}
-      showLineNumbers
-      wrapLines
-    />
-  ) : (
-    <code className={className} {...props} />
-  );
-}
+import remarkFrontmatter from "remark-frontmatter";
+import remarkMdxFrontmatter from "remark-mdx-frontmatter";
+import rehypeMdxCodeProps from "rehype-mdx-code-props";
+import { Highlight, themes } from "prism-react-renderer";
+import rangeParser from "parse-numeric-range";
 
 export default function Header(props: {
   blogs: Blog[];
   setShowNavBar: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const initialMdx = `# 새로운 포스트를 작성합니다!
+  //   const initialMdx = `# 새로운 포스트를 작성합니다!
 
-**turnip3-manager**는 MDX 형식으로 포스트를 작성합니다. MDX는 마크다운(Markdown) 포맷에 JSX 지원을 추가한 형식으로, 마크다운 문서 안에서 자유롭게 React Component를 사용하실 수 있습니다.
-  
-## \`h2\` 태그와 동일합니다.
-### \`h3\` 태그와 동일합니다.
+  // **turnip3-manager**는 MDX 형식으로 포스트를 작성합니다. MDX는 마크다운(Markdown) 포맷에 JSX 지원을 추가한 형식으로, 마크다운 문서 안에서 자유롭게 React Component를 사용하실 수 있습니다.
 
-\`\`\`c
-int main(int argc, char* argv[]) {
-    printf("Hello World %d~!", argc);
-    return 0;
-}
+  // ## \`h2\` 태그와 동일합니다.
+  // ### \`h3\` 태그와 동일합니다.
+
+  // \`\`\`c
+  // int main(int argc, char* argv[]) {
+  //     printf("Hello World %d~!", argc);
+  //     return 0;
+  // }
+  // \`\`\`
+  // `;
+  //   const initialMdx = `---
+  // title: Trying out new custom code blocks
+  // date: "2021-11-02"
+  // description: "A great way to display your code snippets on your MDX+Gatsby blog."
+  // ---
+
+  // Here's an example of my new custom code blocks:
+
+  // \`\`\`jsx
+  // // here's a button in React!
+  // <button
+  //   onClick={() => {
+  //     alert("Hello MDX!");
+  //   }}
+  // >
+  //   test
+  // </button>
+  // \`\`\`
+
+  // Wow! Such code snippets!
+  // Let's see another, with line highlighting:
+
+  // \`\`\`js
+  // // fizzbuzz in JS
+  // for (let i = 1; i <= 100; i++) {
+  //   let out = "";
+  //   if (i % 3 === 0) out += "Fizz";
+  //   if (i % 5 === 0) out += "Buzz";
+  //   console.log(out || i);
+  // }
+  // \`\`\`
+  // `;
+  const initialMdx = `
+\`\`\`c highlights="1,3-5"
+int main()
+
+
+
+
+
 \`\`\`
 `;
+
   const { blogs, setShowNavBar } = props;
   const [writingPost, setWritingPost] = useState<boolean>(false);
   const [oldMdx, setOldMdx] = useState<string>(initialMdx);
   const [mdx, setMdx] = useState<string>(initialMdx);
+  const [mdxTitle, setMdxTitle] = useState<string>("");
   const [settingBtnScope, animateSettingBtn] = useAnimate();
   const [closeBtnScope, animateCloseBtn] = useAnimate();
   const [userBtnScope, animateUserBtn] = useAnimate();
   const monaco = useMonaco();
-  const [Content, setContent] = useState<JSX.Element>(makeMdx(initialMdx));
+  const [Content, setContent] = useState<JSX.Element>(
+    makeMdx(initialMdx).compiledMdx
+  );
 
   useEffect(() => {
     if (!monaco) {
@@ -427,39 +446,171 @@ int main(int argc, char* argv[]) {
     monaco.editor.setTheme("turnip3");
   }, [monaco]);
 
-  function makeMdx(newMdx: string) {
-    // const code = String(
-    //   compileSync(newMdx, {
-    //     outputFormat: "function-body",
-    //     development: false,
-    //     rehypePlugins: [rehypeHighlight],
-    //   })
-    // );
+  const calculateLinesToHighlight = (raw: string) => {
+    const lineNumbers = rangeParser(raw);
+    if (lineNumbers) {
+      return (index: number) => lineNumbers.includes(index + 1);
+    } else {
+      return () => false;
+    }
+  };
 
-    // const { default: Content } = runSync(code, runtime);
-    const { default: Content } = evaluateSync(newMdx, {
+  function makeMdx(newMdx: string) {
+    let { default: compiledMdx, frontmatter } = evaluateSync(newMdx, {
       ...(runtime as any),
       development: false,
-      rehypePlugins: [],
+      rehypePlugins: [rehypeMdxCodeProps],
+      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
     });
 
-    return Content({
-      components: {
-        h1: (props) => (
-          <h1 {...props} className="my-1 py-2 text-4xl font-bold" />
-        ),
-        h2: (props) => (
-          <h2 {...props} className="my-1 py-2 text-3xl font-bold" />
-        ),
-        h3: (props) => (
-          <h3 {...props} className="my-0.5 py-1.5 text-2xl font-bold" />
-        ),
-        h4: (props) => (
-          <h4 {...props} className="text-1xl my-0 py-1 font-bold " />
-        ),
-        code: code,
-      },
-    });
+    console.log(frontmatter);
+    // setMdxTitle(frontmatter?.title);
+    return {
+      compiledMdx: compiledMdx({
+        components: {
+          h1: (props) => (
+            <h1 {...props} className="my-1 py-2 text-3xl font-bold" />
+          ),
+          h2: (props) => (
+            <h2 {...props} className="my-1 py-2 text-2xl font-bold" />
+          ),
+          h3: (props) => (
+            <h3 {...props} className="my-0.5 py-1.5 text-xl font-bold" />
+          ),
+          h4: (props) => (
+            <h4 {...props} className="my-0 py-1 text-lg font-bold " />
+          ),
+          pre: (props) => {
+            console.log(props);
+            const langClassName = props.children?.props?.className || "";
+            const code = props.children?.props.children?.trim() || "";
+            const language = langClassName.replace(/language-/, "");
+            const file = props?.file;
+            const showLineNumber = props?.showLineNumber || false;
+            const highlights = calculateLinesToHighlight(
+              props?.highlights || ""
+            );
+            return (
+              <div
+                style={{
+                  background: "#f5f5f5",
+                  borderRadius: "0.5rem",
+                  marginTop: "2rem",
+                  marginBottom: "2rem",
+                  paddingLeft: "0rem",
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px",
+                }}
+              >
+                <div style={{ display: "flex", position: "relative" }}>
+                  <div
+                    style={{
+                      background: "#a3a3a3",
+                      margin: "0.3rem 0.6rem 0.3rem 0.3rem",
+                      // marginRight: "0.5rem",
+                      paddingLeft: "0.8rem",
+                      paddingRight: "0.8rem",
+                      // textTransform: "uppercase",
+                      // borderTopLeftRadius: "0.5rem",
+                      // borderBottomLeftRadius: "0.5rem",
+                      // borderBottomRightRadius: "0.5rem",
+                      borderRadius: "0.5rem",
+                      // fontFamily: "Montserrat",
+                      fontFamily: "Cascadia Mono",
+                      fontWeight: "bold",
+                      fontSize: "1.2rem",
+                      textAlign: "center",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      color: "white",
+                    }}
+                  >{`${language}`}</div>
+                  <div
+                    style={{
+                      color: "#737373",
+                      // fontFamily: "Montserrat",
+                      // fontStyle: "italic",
+                      fontFamily: "Cascadia Mono",
+                      fontSize: "1rem",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {file && `${file}`}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    overflow: "auto",
+                    background: "#f5f5f5",
+                    borderRadius: "0.5rem",
+                  }}
+                >
+                  <Highlight
+                    // {...defaultProps}
+                    code={code}
+                    language={language}
+                    theme={themes.github}
+                  >
+                    {({
+                      className,
+                      style,
+                      tokens,
+                      getLineProps,
+                      getTokenProps,
+                    }) => (
+                      <pre
+                        className={className}
+                        style={{
+                          ...style,
+                          backgroundColor: "transparent",
+                          float: "left",
+                          minWidth: "100%",
+                        }}
+                      >
+                        {tokens.map((line, i) => (
+                          <div
+                            {...getLineProps({ line, key: i })}
+                            style={{
+                              background: highlights(i)
+                                ? "#fee2e2"
+                                : "transparent",
+                              display: "block",
+                              padding: "0.13rem 1rem",
+                            }}
+                          >
+                            <div className="flex flex-row">
+                              {showLineNumber === true ? (
+                                <h1 className="mr-4 text-neutral-400">
+                                  {i + 1}
+                                </h1>
+                              ) : null}
+                              <div>
+                                {line.map((token, key) => (
+                                  <span
+                                    key={key}
+                                    {...getTokenProps({ token, key })}
+                                    className="whitespace-pre-wrap text-[0.9rem]"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </pre>
+                    )}
+                  </Highlight>
+                </div>
+              </div>
+            );
+          },
+          wrapper: ({ children }) => <>{children}</>,
+        },
+      }),
+      frontmatter,
+    };
   }
 
   return (
@@ -529,7 +680,7 @@ int main(int argc, char* argv[]) {
                 </svg>
               )}
               {writingPost === true ? (
-                <motion.input
+                <motion.h1
                   className="ml-2 flex h-8 w-full max-w-sm border-collapse cursor-text select-none flex-row items-center rounded-md bg-neutral-200/80 pl-2 text-[0.9rem] outline-none  transition-all  focus:outline-none"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1, transition: { delay: 0.2 } }}
@@ -543,8 +694,9 @@ int main(int argc, char* argv[]) {
                     scaleX: 1.02,
                     transition: { duration: 0.2 },
                   }}
-                  defaultValue="Unsaved Post"
-                />
+                >
+                  {mdxTitle}
+                </motion.h1>
               ) : (
                 <h1
                   className="text-md ml-0.5 flex w-full cursor-text select-none flex-row items-center pl-0.5 italic text-neutral-600 transition duration-700 hover:text-black
@@ -652,10 +804,10 @@ int main(int argc, char* argv[]) {
                   console.log("new Input", mdx);
                   // let res: MDXContent = (() => <></>) as MDXContent;
                   try {
-                    const res = makeMdx(mdx || "");
+                    const { compiledMdx, frontmatter } = makeMdx(mdx || "");
                     console.log("MDX Compile success!");
-                    setContent(res);
-
+                    setContent(compiledMdx);
+                    setMdxTitle(frontmatter?.title);
                     console.log("Apply Success");
                   } catch (e) {
                     console.error(e);
@@ -665,8 +817,9 @@ int main(int argc, char* argv[]) {
                   // setMdx(mdx || "");
                 }}
               />
-              <div className="h1 max-h-[calc(100vh-8.5rem)] animate-enterance-from-top overflow-y-auto px-4 pb-5 pt-1">
-                {Content}
+              <div className="h1 max-h-[calc(100vh-8.5rem)] animate-enterance-from-top overflow-y-auto px-7 pb-5 pt-1">
+                <h1 className="py-2 text-4xl font-bold">{mdxTitle}</h1>
+                <div className="flex flex-col pt-3">{Content}</div>
               </div>
             </div>
           ) : null}

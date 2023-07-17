@@ -16,7 +16,7 @@ export default {
       },
       fontFamily: {
         'sans': ['Spoqa Han Sans Neo', ...defaultTheme.fontFamily.sans],
-        'mono': ['Cascadia Mono','Spoqa Han Sans Neo', ...defaultTheme.fontFamily.mono]
+        'mono': ['Cascadia Mono', 'Spoqa Han Sans Neo', ...defaultTheme.fontFamily.mono]
       },
       keyframes: {
         'header-helper-text': {

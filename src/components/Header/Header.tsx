@@ -4,7 +4,7 @@ import Editor, { useMonaco } from "@monaco-editor/react";
 import { motion, AnimatePresence } from "framer-motion";
 import * as runtime from "react/jsx-runtime";
 import { evaluateSync } from "@mdx-js/mdx";
-import components from "../MDXComponents/MDXComponents";
+import components from "./MDXComponents/MDXComponents";
 import "highlight.js/styles/github.css";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
@@ -13,6 +13,9 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import rehypeMdxCodeProps from "rehype-mdx-code-props";
 import remarkGfm from "remark-gfm";
+import HierarchicalInfo from "./HierarchicalInfo";
+import Turnip3Theme from "./MonacoEditor/Turnip3Theme";
+import monacoConfig from "./MonacoEditor/MonacoConfig";
 
 export default function Header(props: {
   blogs: Blog[];
@@ -64,6 +67,13 @@ for (let i = 1; i <= 100; i++) {
 }
 \`\`\`
 `;
+  const tempBlog: Blog = {
+    blogUrl: "https://github.com",
+    id: "044aa503-a561-4af9-8e74-17d4cd508615",
+    logoUrl:
+      "data:image/svg+xml,%3Csvg version='1.0' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 64 64' enable-background='new 0 0 64 64' xml:space='preserve' fill='%23000000'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cg%3E%3Ccircle fill='%23F76D57' cx='32' cy='32' r='24'%3E%3C/circle%3E%3Cg%3E%3Cpath fill='%23394240' d='M32,0C14.328,0,0,14.328,0,32s14.328,32,32,32s32-14.328,32-32S49.672,0,32,0z M32,56 C18.746,56,8,45.254,8,32S18.746,8,32,8s24,10.746,24,24S45.254,56,32,56z'%3E%3C/path%3E%3Cpath fill='%23394240' d='M36,30.344V16c0-2.211-1.789-4-4-4s-4,1.789-4,4v16c0,0.523,0.105,1.039,0.309,1.527 c0.203,0.492,0.496,0.938,0.867,1.305l7.934,7.934c1.566,1.566,4.168,1.645,5.734,0.078c1.562-1.562,1.582-4.074,0.016-5.641 L36,30.344z'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E",
+    name: "temp blog",
+  };
   const initialCompiledMdx = makeMdx(initialMdx);
   const { blogs, setShowNavBar } = props;
   const [writingPost, setWritingPost] = useState<boolean>(false);
@@ -80,6 +90,7 @@ for (let i = 1; i <= 100; i++) {
   const [Content, setContent] = useState<JSX.Element>(
     initialCompiledMdx.content
   );
+  const [curBlog, setCurBlog] = useState<Blog>(tempBlog);
   const [mdxHasProblem, setMdxHasProblem] = useState<boolean>(false);
 
   useEffect(() => {
@@ -87,355 +98,7 @@ for (let i = 1; i <= 100; i++) {
       return;
     }
 
-    monaco.editor.defineTheme("turnip3", {
-      base: "vs",
-      inherit: true,
-      rules: [
-        {
-          background: "ffffff",
-          token: "",
-        },
-        {
-          foreground: "6a737d",
-          token: "comment",
-        },
-        {
-          foreground: "6a737d",
-          token: "punctuation.definition.comment",
-        },
-        {
-          foreground: "6a737d",
-          token: "string.comment",
-        },
-        {
-          foreground: "005cc5",
-          token: "constant",
-        },
-        {
-          foreground: "005cc5",
-          token: "entity.name.constant",
-        },
-        {
-          foreground: "005cc5",
-          token: "variable.other.constant",
-        },
-        {
-          foreground: "005cc5",
-          token: "variable.language",
-        },
-        {
-          foreground: "6f42c1",
-          token: "entity",
-        },
-        {
-          foreground: "6f42c1",
-          token: "entity.name",
-        },
-        {
-          foreground: "24292e",
-          token: "variable.parameter.function",
-        },
-        {
-          foreground: "22863a",
-          token: "entity.name.tag",
-        },
-        {
-          foreground: "d73a49",
-          token: "keyword",
-        },
-        {
-          foreground: "d73a49",
-          token: "storage",
-        },
-        {
-          foreground: "d73a49",
-          token: "storage.type",
-        },
-        {
-          foreground: "24292e",
-          token: "storage.modifier.package",
-        },
-        {
-          foreground: "24292e",
-          token: "storage.modifier.import",
-        },
-        {
-          foreground: "24292e",
-          token: "storage.type.java",
-        },
-        {
-          foreground: "032f62",
-          token: "string",
-        },
-        {
-          foreground: "032f62",
-          token: "punctuation.definition.string",
-        },
-        {
-          foreground: "032f62",
-          token: "string punctuation.section.embedded source",
-        },
-        {
-          foreground: "005cc5",
-          token: "support",
-        },
-        {
-          foreground: "005cc5",
-          token: "meta.property-name",
-        },
-        {
-          foreground: "e36209",
-          token: "variable",
-        },
-        {
-          foreground: "24292e",
-          token: "variable.other",
-        },
-        {
-          foreground: "b31d28",
-          fontStyle: "bold italic underline",
-          token: "invalid.broken",
-        },
-        {
-          foreground: "b31d28",
-          fontStyle: "bold italic underline",
-          token: "invalid.deprecated",
-        },
-        {
-          foreground: "fafbfc",
-          background: "b31d28",
-          fontStyle: "italic underline",
-          token: "invalid.illegal",
-        },
-        {
-          foreground: "fafbfc",
-          background: "d73a49",
-          fontStyle: "italic underline",
-          token: "carriage-return",
-        },
-        {
-          foreground: "b31d28",
-          fontStyle: "bold italic underline",
-          token: "invalid.unimplemented",
-        },
-        {
-          foreground: "b31d28",
-          token: "message.error",
-        },
-        {
-          foreground: "24292e",
-          token: "string source",
-        },
-        {
-          foreground: "005cc5",
-          token: "string variable",
-        },
-        {
-          foreground: "032f62",
-          token: "source.regexp",
-        },
-        {
-          foreground: "032f62",
-          token: "string.regexp",
-        },
-        {
-          foreground: "032f62",
-          token: "string.regexp.character-class",
-        },
-        {
-          foreground: "032f62",
-          token: "string.regexp constant.character.escape",
-        },
-        {
-          foreground: "032f62",
-          token: "string.regexp source.ruby.embedded",
-        },
-        {
-          foreground: "032f62",
-          token: "string.regexp string.regexp.arbitrary-repitition",
-        },
-        {
-          foreground: "22863a",
-          fontStyle: "bold",
-          token: "string.regexp constant.character.escape",
-        },
-        {
-          foreground: "005cc5",
-          token: "support.constant",
-        },
-        {
-          foreground: "005cc5",
-          token: "support.variable",
-        },
-        {
-          foreground: "005cc5",
-          token: "meta.module-reference",
-        },
-        {
-          foreground: "735c0f",
-          token: "markup.list",
-        },
-        {
-          foreground: "005cc5",
-          fontStyle: "bold",
-          token: "markup.heading",
-        },
-        {
-          foreground: "005cc5",
-          fontStyle: "bold",
-          token: "markup.heading entity.name",
-        },
-        {
-          foreground: "22863a",
-          token: "markup.quote",
-        },
-        {
-          foreground: "24292e",
-          fontStyle: "italic",
-          token: "markup.italic",
-        },
-        {
-          foreground: "24292e",
-          fontStyle: "bold",
-          token: "markup.bold",
-        },
-        {
-          foreground: "005cc5",
-          token: "markup.raw",
-        },
-        {
-          foreground: "b31d28",
-          background: "ffeef0",
-          token: "markup.deleted",
-        },
-        {
-          foreground: "b31d28",
-          background: "ffeef0",
-          token: "meta.diff.header.from-file",
-        },
-        {
-          foreground: "b31d28",
-          background: "ffeef0",
-          token: "punctuation.definition.deleted",
-        },
-        {
-          foreground: "22863a",
-          background: "f0fff4",
-          token: "markup.inserted",
-        },
-        {
-          foreground: "22863a",
-          background: "f0fff4",
-          token: "meta.diff.header.to-file",
-        },
-        {
-          foreground: "22863a",
-          background: "f0fff4",
-          token: "punctuation.definition.inserted",
-        },
-        {
-          foreground: "e36209",
-          background: "ffebda",
-          token: "markup.changed",
-        },
-        {
-          foreground: "e36209",
-          background: "ffebda",
-          token: "punctuation.definition.changed",
-        },
-        {
-          foreground: "f6f8fa",
-          background: "005cc5",
-          token: "markup.ignored",
-        },
-        {
-          foreground: "f6f8fa",
-          background: "005cc5",
-          token: "markup.untracked",
-        },
-        {
-          foreground: "6f42c1",
-          fontStyle: "bold",
-          token: "meta.diff.range",
-        },
-        {
-          foreground: "005cc5",
-          token: "meta.diff.header",
-        },
-        {
-          foreground: "005cc5",
-          fontStyle: "bold",
-          token: "meta.separator",
-        },
-        {
-          foreground: "005cc5",
-          token: "meta.output",
-        },
-        {
-          foreground: "586069",
-          token: "brackethighlighter.tag",
-        },
-        {
-          foreground: "586069",
-          token: "brackethighlighter.curly",
-        },
-        {
-          foreground: "586069",
-          token: "brackethighlighter.round",
-        },
-        {
-          foreground: "586069",
-          token: "brackethighlighter.square",
-        },
-        {
-          foreground: "586069",
-          token: "brackethighlighter.angle",
-        },
-        {
-          foreground: "586069",
-          token: "brackethighlighter.quote",
-        },
-        {
-          foreground: "b31d28",
-          token: "brackethighlighter.unmatched",
-        },
-        {
-          foreground: "b31d28",
-          token: "sublimelinter.mark.error",
-        },
-        {
-          foreground: "e36209",
-          token: "sublimelinter.mark.warning",
-        },
-        {
-          foreground: "959da5",
-          token: "sublimelinter.gutter-mark",
-        },
-        {
-          foreground: "032f62",
-          fontStyle: "underline",
-          token: "constant.other.reference.link",
-        },
-        {
-          foreground: "032f62",
-          fontStyle: "underline",
-          token: "string.other.link",
-        },
-      ],
-      colors: {
-        "editor.foreground": "#24292e",
-        "editor.background": "#ffffff00",
-        "editor.selectionBackground": "#c8c8fa80",
-        "editor.inactiveSelectionBackground": "#fafbfc80",
-        // "editor.lineHighlightBackground": "#fafbfc",
-        "editor.lineHighlightBackground": "#d4d4d480",
-        "editorCursor.foreground": "#24292e",
-        "editorWhitespace.foreground": "#959da580",
-        "editorIndentGuide.background": "#959da580",
-        "editorIndentGuide.activeBackground": "#24292e80",
-        "editor.selectionHighlightBorder": "#fafbfc80",
-      },
-    });
+    monaco.editor.defineTheme("turnip3", Turnip3Theme);
     monaco.editor.setTheme("turnip3");
   }, [monaco]);
 
@@ -469,7 +132,7 @@ for (let i = 1; i <= 100; i++) {
     >
       {/* Header */}
       <div
-        className={`absolute left-0 right-0 top-0 mx-8 my-6 flex flex-row justify-between rounded-2xl  bg-white/50 pt-1.5 shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)] backdrop-blur-xl transition-all duration-300 ease-in-out hover:scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] ${
+        className={`absolute left-0 right-0 top-0 mx-8 my-6 flex flex-row justify-between rounded-2xl  bg-white pt-1.5 shadow-[0_0px_16px_2px_rgba(0,0,0,0.20)] transition-all duration-300 ease-in-out hover:scale-[1.004] hover:shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] ${
           writingPost === true
             ? `ml-3 mr-3 mt-3 h-[calc(100vh-5rem)] rounded-2xl shadow-[0_0px_24px_4px_rgba(0,0,0,0.25)] hover:scale-[1]`
             : `h-12`
@@ -488,8 +151,8 @@ for (let i = 1; i <= 100; i++) {
           >
             {/* https://www.svgrepo.com/svg/510067/menu */}
             <div
-              className={`flex flex-row items-center justify-start ${
-                writingPost === true ? `w-1/2 pr-4` : `w-full`
+              className={`flex w-full flex-row items-center justify-start ${
+                writingPost === true ? `pr-4` : ``
               }`}
             >
               {writingPost === true ? (
@@ -528,23 +191,7 @@ for (let i = 1; i <= 100; i++) {
                 </svg>
               )}
               {writingPost === true ? (
-                <motion.h1
-                  className="ml-2 flex h-8 w-full max-w-sm border-collapse cursor-text select-none flex-row items-center rounded-md bg-neutral-200/80 pl-2 text-[0.9rem] outline-none  transition-all  focus:outline-none"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1, transition: { delay: 0.2 } }}
-                  whileHover={{
-                    scaleY: 1.04,
-                    scaleX: 1.02,
-                    transition: { duration: 0.2 },
-                  }}
-                  whileFocus={{
-                    scaleY: 1.04,
-                    scaleX: 1.02,
-                    transition: { duration: 0.2 },
-                  }}
-                >
-                  {mdxTitle}
-                </motion.h1>
+                <HierarchicalInfo curBlog={curBlog} mdxTitle={mdxTitle} />
               ) : (
                 <h1
                   className="text-md ml-0.5 flex w-full cursor-text select-none flex-row items-center pl-0.5 italic text-neutral-600 transition duration-700 hover:text-black
@@ -559,7 +206,7 @@ for (let i = 1; i <= 100; i++) {
               {writingPost === true ? (
                 <div className="flex flex-row items-end justify-end">
                   <motion.svg
-                    className="z-50 h-9 w-9 cursor-pointer p-1.5"
+                    className="z-30 h-9 w-9 cursor-pointer p-1.5"
                     initial={{ scale: 0, rotate: 210, opacity: 0 }}
                     animate={{
                       scale: 1,
@@ -635,26 +282,17 @@ for (let i = 1; i <= 100; i++) {
             </AnimatePresence>
           </div>
           {writingPost === true ? (
-            <div className=" grid w-full grid-cols-2 px-2 py-6 pt-1.5">
+            <div className="grid w-full animate-enterance-from-top grid-cols-2 px-2 py-6 pt-1.5">
               <Editor
-                className="relative -left-4 h-[calc(100vh-8.5rem)] animate-enterance-from-top"
+                className="relative -left-4 h-[calc(100vh-8.5rem)]"
                 language="markdown"
                 defaultValue={initialMdx}
                 loading={null}
                 theme="turnip3"
-                options={{
-                  fontSize: 15,
-                  fontFamily: "Cascadia Mono, Spoqa Han Sans Neo",
-                  minimap: { enabled: false },
-                  wordWrap: "on",
-                }}
+                options={monacoConfig}
                 onChange={(mdx) => {
-                  console.log("new Input", mdx);
-                  // let res: MDXContent = (() => <></>) as MDXContent;
                   try {
-                    const { content: compiledMdx, frontmatter } = makeMdx(
-                      mdx || ""
-                    );
+                    const { content: compiledMdx } = makeMdx(mdx || "");
                     console.log("MDX Compile success!");
                     setContent(compiledMdx);
                     setMdxHasProblem(false);
@@ -664,23 +302,14 @@ for (let i = 1; i <= 100; i++) {
                     console.error(e);
                     console.log("MDX compile error!");
                   }
-
-                  // setMdx(mdx || "");
                 }}
               />
-              <div className="h1 max-h-[calc(100vh-8.5rem)] animate-enterance-from-top overflow-y-auto px-7 py-1">
+              <div className="h1 max-h-[calc(100vh-8.5rem)] overflow-y-auto px-7 py-1">
                 {mdxHasProblem === true ? (
                   <h1 className="text-md flex animate-pulse flex-row items-center justify-center rounded-md bg-red-200/60 px-0.5 py-1 font-mono font-bold text-red-500">
                     Now MDX File Has a Problem!
                   </h1>
                 ) : null}
-                {mdxTitle && mdxTitle.length > 0 ? (
-                  <h1 className="py-2 text-4xl font-bold">{mdxTitle}</h1>
-                ) : null}
-                {mdxDate && mdxDate.length > 0 ? (
-                  <h4 className="text-baseline py-2 font-bold">{mdxDate}</h4>
-                ) : null}
-
                 <div className="flex flex-col [&>:not(first)]:pt-3">
                   {Content}
                 </div>

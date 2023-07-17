@@ -24,7 +24,12 @@ export default function HierarchicalInfo(props: {
     ["TITLE", mdxTitle, 2],
   ] as const;
   return (
-    <div className="z-10 flex flex-row items-center px-1">
+    <motion.div
+      className="z-10 flex flex-row items-center px-1"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       {data.map((el, i) =>
         el[0] === "RIGHTARROW" ? (
           <motion.svg
@@ -35,7 +40,7 @@ export default function HierarchicalInfo(props: {
               x: "0rem",
               transition: { delay: 0.2 },
             }}
-            whileHover={{ x: "0.3rem", scale: 1.3 }}
+            whileHover={{ x: "0.15rem", scale: 1.3 }}
             xmlns="http://www.w3.org/2000/svg"
             width="800"
             height="800"
@@ -66,7 +71,7 @@ export default function HierarchicalInfo(props: {
               // scaleX: 1.01,
               // backgroundColor: "rgb(240,240,240)",
               color: "rgb(150,150,150)",
-              scale: 0.97,
+              scale: 0.985,
               // boxShadow: "0px 2.5px 5px 3px rgba(0,0,0,0.15)",
               transition: { duration: 0.1 },
             }}
@@ -99,6 +104,6 @@ export default function HierarchicalInfo(props: {
           </motion.div>
         )
       )}
-    </div>
+    </motion.div>
   );
 }

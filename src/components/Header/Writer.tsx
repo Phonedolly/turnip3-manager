@@ -17,7 +17,6 @@ import remarkGfm from "remark-gfm";
 
 export default function Writer(props: {
   setCurPost: React.Dispatch<React.SetStateAction<IPost>>;
-  mdxTitle: string;
   monacoConfig: editor.IStandaloneEditorConstructionOptions;
 }) {
   function makeMdx(newMdx: string) {
@@ -88,7 +87,7 @@ for (let i = 1; i <= 100; i++) {
 }
 \`\`\`
 `;
-  const { monacoConfig, mdxTitle, setCurPost } = props;
+  const { monacoConfig, setCurPost } = props;
   const initialCompiledMdx = makeMdx(initialMdx);
   const [mdxHasProblem, setMdxHasProblem] = useState<boolean>(false);
 
@@ -109,7 +108,7 @@ for (let i = 1; i <= 100; i++) {
   // }, []);
 
   return (
-    <AnimatePresence>
+    
       <motion.div
         className="grid w-full grid-cols-2 px-2 py-6 pt-1.5"
         initial={{ opacity: 0 }}
@@ -131,7 +130,7 @@ for (let i = 1; i <= 100; i++) {
               setMdxHasProblem(false);
               setCurPost((prev) => ({
                 ...prev,
-                curTitle: frontmatter?.title || "",
+                // curTitle: frontmatter?.title || "",
               }));
               console.log("Apply Success");
             } catch (e) {
@@ -150,6 +149,6 @@ for (let i = 1; i <= 100; i++) {
           <div className="flex flex-col [&>:not(first)]:pt-3">{Content}</div>
         </div>
       </motion.div>
-    </AnimatePresence>
+    
   );
 }

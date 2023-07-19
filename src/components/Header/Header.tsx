@@ -93,7 +93,6 @@ export default function Header(props: {
       >
           {writingPost === true ? (
             <HeaderContentForWriting
-              mdxTitle={curPost.curTitle}
               setCurPost={setCurBlog}
               curPost={curPost}
               monacoConfig={monacoConfig}

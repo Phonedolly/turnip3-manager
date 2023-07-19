@@ -1,6 +1,7 @@
 import { AnimatePresence, Variants, motion } from "framer-motion";
-import { memo, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { v4 as uuid } from "uuid";
+import RightArrow from "./RightArrow";
 
 interface IHierarchicalInfo {
   curTitle: string;
@@ -26,7 +27,7 @@ export default function HierarchicalInfo(props: IHierarchicalInfo) {
       <div className="relative">
         <motion.div
           className="flex h-7 cursor-pointer select-none flex-row items-center gap-1.5 rounded-lg bg-neutral-200/60 px-2 py-1"
-          initial={{ opacity: 0, x: "-1rem" }}
+          initial={{ opacity: 0, x: "2rem" }}
           animate={{ opacity: 1, x: "0rem" }}
           whileHover={{
             backgroundColor: "rgb(240,240,240)",
@@ -56,6 +57,7 @@ export default function HierarchicalInfo(props: IHierarchicalInfo) {
             {props.boxValue}
           </h1>
         </motion.div>
+
         {isHover === true ? (
           <motion.span
             className="absolute top-8 flex w-full flex-row items-center justify-center"
@@ -78,48 +80,26 @@ export default function HierarchicalInfo(props: IHierarchicalInfo) {
       </div>
     );
   };
-  const RightArrow = memo(() => (
-    <motion.svg
-      className="h-9 w-9 p-2"
-      initial={{ opacity: 0, x: "-1rem" }}
-      animate={{
-        opacity: 1,
-        x: "0rem",
-      }}
-      whileHover={{ x: "0.15rem", scale: 1.3 }}
-      key={uuid()}
-      xmlns="http://www.w3.org/2000/svg"
-      width="800"
-      height="800"
-      fill="none"
-      stroke="#404040"
-      strokeWidth="0.72"
-      viewBox="0 0 24 24"
-    >
-      {/* https://www.svgrepo.com/svg/510166/right-chevron */}
-      <path
-        fill="#404040"
-        fillRule="evenodd"
-        d="M8.293 4.293a1 1 0 011.414 0l7 7a1 1 0 010 1.414l-7 7a1 1 0 01-1.414-1.414L14.586 12 8.293 5.707a1 1 0 010-1.414z"
-        clipRule="evenodd"
-      ></path>
-    </motion.svg>
-  ));
+  const mustEqual = () => true;
 
   return (
     <motion.div
       className="z-10 flex h-12 flex-row items-center px-1"
-      variants={defaultVariants}
+      // variants={defaultVariants}
       // initial="hidden"
-      animate="visible"
+      // animate="visible"
       exit="exit"
+
     >
-      <HiearchicalBox boxName="CATEGORY" boxValue={curBlogName} key={uuid()} />
+      <HiearchicalBox boxName="CATEGORY" boxValue={curBlogName} />
       <RightArrow />
-      <HiearchicalBox boxName="CATERGORY" boxValue={curCategory} key={uuid()} />
-      <RightArrow />
-      <HiearchicalBox boxName="TITLE" boxValue={curTitle} key={uuid()} />
+      <HiearchicalBox boxName="CATERGORY" boxValue={curCategory} />
+      <RightArrow       key={uuid()}/>
+      <HiearchicalBox
+        boxName="TITLE"
+        boxValue={curTitle}
+        // key={uuid()}
+      />
     </motion.div>
   );
 }
-

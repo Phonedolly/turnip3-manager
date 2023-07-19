@@ -3,33 +3,91 @@ import { editor } from "monaco-editor";
 import { v4 as uuid } from "uuid";
 import Writer from "./Writer";
 
-import { useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import HierarchicalInfo from "./HierarchicalInfo";
 
 export default function HeaderContentForWriting(props: {
   curPost: IPost;
-  mdxTitle: string;
   monacoConfig: editor.IStandaloneEditorConstructionOptions;
   setCurPost: React.Dispatch<React.SetStateAction<IPost>>;
   setWritingPost: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { curPost, mdxTitle, setCurPost, monacoConfig, setWritingPost } = props;
+  const { curPost, setCurPost, monacoConfig, setWritingPost } = props;
+  const mustEqual = () => true;
+  const RightButtons = memo(
+    (props: {
+      setWritingPost: React.Dispatch<React.SetStateAction<boolean>>;
+    }) => {
+      return (
+        <div className="flex flex-row items-center">
+          {/* https://www.svgrepo.com/svg/497505/setting-2 */}
+          <motion.svg
+            className="z-30 h-9 w-9 cursor-pointer p-1.5"
+            initial={{ scale: 0, rotate: 210, opacity: 0 }}
+            animate={{
+              scale: 1,
+              rotate: 0,
+              opacity: 1,
+            }}
+            whileHover={{ scale: 1.2, rotate: 45 }}
+            exit={{ scale: 0, rotate: 210, opacity: 0 }}
+            xmlns="http://www.w3.org/2000/svg"
+            width="160"
+            height="160"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <g
+              stroke="#000"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeMiterlimit="10"
+              strokeWidth="1.9"
+            >
+              <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"></path>
+              <path d="M2 12.88v-1.76c0-1.04.85-1.9 1.9-1.9 1.81 0 2.55-1.28 1.64-2.85-.52-.9-.21-2.07.7-2.59l1.73-.99c.79-.47 1.81-.19 2.28.6l.11.19c.9 1.57 2.38 1.57 3.29 0l.11-.19c.47-.79 1.49-1.07 2.28-.6l1.73.99c.91.52 1.22 1.69.7 2.59-.91 1.57-.17 2.85 1.64 2.85 1.04 0 1.9.85 1.9 1.9v1.76c0 1.04-.85 1.9-1.9 1.9-1.81 0-2.55 1.28-1.64 2.85.52.91.21 2.07-.7 2.59l-1.73.99c-.79.47-1.81.19-2.28-.6l-.11-.19c-.9-1.57-2.38-1.57-3.29 0l-.11.19c-.47.79-1.49 1.07-2.28.6l-1.73-.99a1.899 1.899 0 01-.7-2.59c.91-1.57.17-2.85-1.64-2.85-1.05 0-1.9-.86-1.9-1.9z"></path>
+            </g>
+          </motion.svg>
+          {/* https://www.svgrepo.com/svg/503004/close */}
+          <motion.svg
+            className={`mr-1.5 h-9 w-9 cursor-pointer p-1`}
+            onClick={() => {
+              props.setWritingPost(false);
+            }}
+            initial={{ scale: 0, rotate: 210, opacity: 0 }}
+            animate={{
+              scale: 1,
+              rotate: 0,
+              opacity: 1,
+            }}
+            whileHover={{ scale: 1.2 }}
+            exit={{ scale: 0, rotate: 210, opacity: 0 }}
+            xmlns="http://www.w3.org/2000/svg"
+            width="800"
+            height="800"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="#000"
+              fillRule="evenodd"
+              d="M19.207 6.207a1 1 0 00-1.414-1.414L12 10.586 6.207 4.793a1 1 0 00-1.414 1.414L10.586 12l-5.793 5.793a1 1 0 101.414 1.414L12 13.414l5.793 5.793a1 1 0 001.414-1.414L13.414 12l5.793-5.793z"
+              clipRule="evenodd"
+            ></path>
+          </motion.svg>
+        </div>
+      );
+    },
+    mustEqual
+  );
 
-  return (
-    <AnimatePresence>
-      <motion.div
-        className={`flex h-full w-full flex-col items-center`}
-        initial={{ opacity: 0, y: "-2rem" }}
-        animate={{
-          opacity: 1,
-          y: "0rem",
-          transition: { duration: 0.5, delayChildren: 0.5 },
-        }}
-        exit={{ opacity: 0, y: "-2rem", transition: { duration: 0.5 } }}
-      >
+  const Header = memo(
+    (props: { curBlogName: string; curCategory: string; curTitle: string }) => {
+      const s = useCallback(setWritingPost, []);
+      return (
         <div
           className={`flex w-full flex-row items-center justify-between`}
-          key={uuid()}
+          // key={uuid()}
         >
           <div className="flex flex-row items-center">
             {/* https://www.svgrepo.com/svg/510151/quill */}
@@ -49,76 +107,45 @@ export default function HeaderContentForWriting(props: {
                 clipRule="evenodd"
               ></path>
             </motion.svg>
+
             <HierarchicalInfo
-              curBlogName={curPost.curBlog.name}
-              curCategory={curPost.curCategory}
-              curTitle={curPost.curTitle}
+              curBlogName={props.curBlogName}
+              curCategory={props.curCategory}
+              curTitle={props.curTitle}
             />
-          </div>
-          <div className="flex flex-row items-center">
-            {/* https://www.svgrepo.com/svg/497505/setting-2 */}
-            <motion.svg
-              className="z-30 h-9 w-9 cursor-pointer p-1.5"
-              initial={{ scale: 0, rotate: 210, opacity: 0 }}
-              animate={{
-                scale: 1,
-                rotate: 0,
-                opacity: 1,
-              }}
-              whileHover={{ scale: 1.2, rotate: 45 }}
-              exit={{ scale: 0, rotate: 210, opacity: 0 }}
-              xmlns="http://www.w3.org/2000/svg"
-              width="160"
-              height="160"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <g
-                stroke="#000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeMiterlimit="10"
-                strokeWidth="1.9"
-              >
-                <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"></path>
-                <path d="M2 12.88v-1.76c0-1.04.85-1.9 1.9-1.9 1.81 0 2.55-1.28 1.64-2.85-.52-.9-.21-2.07.7-2.59l1.73-.99c.79-.47 1.81-.19 2.28.6l.11.19c.9 1.57 2.38 1.57 3.29 0l.11-.19c.47-.79 1.49-1.07 2.28-.6l1.73.99c.91.52 1.22 1.69.7 2.59-.91 1.57-.17 2.85 1.64 2.85 1.04 0 1.9.85 1.9 1.9v1.76c0 1.04-.85 1.9-1.9 1.9-1.81 0-2.55 1.28-1.64 2.85.52.91.21 2.07-.7 2.59l-1.73.99c-.79.47-1.81.19-2.28-.6l-.11-.19c-.9-1.57-2.38-1.57-3.29 0l-.11.19c-.47.79-1.49 1.07-2.28.6l-1.73-.99a1.899 1.899 0 01-.7-2.59c.91-1.57.17-2.85-1.64-2.85-1.05 0-1.9-.86-1.9-1.9z"></path>
-              </g>
-            </motion.svg>
-            {/* https://www.svgrepo.com/svg/503004/close */}
-            <motion.svg
-              className={`mr-1.5 h-9 w-9 cursor-pointer p-1`}
-              onClick={() => {
-                setWritingPost(false);
-              }}
-              initial={{ scale: 0, rotate: 210, opacity: 0 }}
-              animate={{
-                scale: 1,
-                rotate: 0,
-                opacity: 1,
-              }}
-              whileHover={{ scale: 1.2 }}
-              exit={{ scale: 0, rotate: 210, opacity: 0 }}
-              xmlns="http://www.w3.org/2000/svg"
-              width="800"
-              height="800"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="#000"
-                fillRule="evenodd"
-                d="M19.207 6.207a1 1 0 00-1.414-1.414L12 10.586 6.207 4.793a1 1 0 00-1.414 1.414L10.586 12l-5.793 5.793a1 1 0 101.414 1.414L12 13.414l5.793 5.793a1 1 0 001.414-1.414L13.414 12l5.793-5.793z"
-                clipRule="evenodd"
-              ></path>
-            </motion.svg>
+            <RightButtons setWritingPost={s} />
           </div>
         </div>
-        <Writer
-          mdxTitle={mdxTitle}
-          monacoConfig={monacoConfig}
-          setCurPost={setCurPost}
-        />
-      </motion.div>
-    </AnimatePresence>
+      );
+    },
+    mustEqual
+  );
+  const H = memo(
+    (props: { curBlogName: string; curCategory: string; curTitle: string }) => (
+      <Header
+        curBlogName={props.curBlogName}
+        curCategory={props.curCategory}
+        curTitle={props.curTitle}
+      />
+    )
+  );
+  return (
+    <motion.div
+      className={`flex h-full w-full flex-col items-center`}
+      initial={{ opacity: 0, y: "-2rem" }}
+      animate={{
+        opacity: 1,
+        y: "0rem",
+        transition: { duration: 0.5, delayChildren: 0.5 },
+      }}
+      exit={{ opacity: 0, y: "-2rem", transition: { duration: 0.5 } }}
+    >
+      <H
+        curBlogName={curPost.curBlog.name}
+        curCategory={curPost.curCategory}
+        curTitle={curPost.curTitle}
+      />
+      <Writer monacoConfig={monacoConfig} setCurPost={setCurPost} />
+    </motion.div>
   );
 }

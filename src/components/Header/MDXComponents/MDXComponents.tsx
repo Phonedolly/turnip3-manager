@@ -28,9 +28,9 @@ const components: MDXComponents = {
         ? calculateLinesToHighlight(props.highlights)
         : () => false;
     return (
-      <div className="my-8 flex flex-col gap-2 rounded-md bg-neutral-100 shadow-[0_7px_24px_4px_rgba(0,0,0,0.25)]">
+      <div className="my-8 flex flex-col gap-2 rounded-xl bg-neutral-100 shadow-[0_7px_24px_4px_rgba(0,0,0,0.25)]">
         <div className="flex flex-row items-center">
-          <div className="text-md mx-3 rounded-md bg-neutral-400/80 px-3 py-0.5 text-center font-bold text-white">{`${language}`}</div>
+          <div className="text-md mx-3 rounded-xl bg-neutral-400/80 px-3 py-0.5 text-center font-bold text-white">{`${language}`}</div>
           <div className="mr-2 flex items-center justify-center break-all font-mono text-[0.95rem] text-neutral-400">
             {fileName && `${fileName}`}
           </div>
@@ -55,7 +55,7 @@ const components: MDXComponents = {
                 {tokens.map((line, i) => (
                   <div
                     {...getLineProps({ line, key: i })}
-                    className={`block px-6 last:rounded-b-md ${
+                    className={`block px-6 last:rounded-b-xl ${
                       highlights(i) === true
                         ? `bg-red-100 hover:saturate-200`
                         : `hover:bg-neutral-200/70 hover:saturate-200`

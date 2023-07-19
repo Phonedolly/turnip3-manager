@@ -66,7 +66,7 @@ export default function NavBar(props: {
       </div>
       <Link
         to="/"
-        className="flex w-10/12 cursor-pointer flex-row items-center justify-start gap-3 rounded-md py-3 pl-5 transition-colors duration-150 hover:bg-neutral-300/30"
+        className="flex w-10/12 cursor-pointer flex-row items-center justify-start gap-3 rounded-md py-3 pl-5 duration-150 hover:bg-neutral-300/30"
         onClick={() => setShowNavBar(false)}
       >
         <svg

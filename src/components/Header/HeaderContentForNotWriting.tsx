@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { v4 as uuid } from "uuid";
 
 export default function HeaderContentForNotWriting(props: {
@@ -7,8 +7,13 @@ export default function HeaderContentForNotWriting(props: {
 }) {
   const { setShowNavBar, setWritingPost } = props;
   return (
-    <div className={`flex w-full flex-col items-center`}>
-      <div
+    <motion.div
+      className={`flex w-full flex-col items-center justify-center`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      // exit={{ opacity: 0 }}
+    >
+      <motion.div
         className={`flex w-full flex-row items-center justify-between`}
         key={uuid()}
       >
@@ -56,7 +61,7 @@ export default function HeaderContentForNotWriting(props: {
             ></path>
           </svg>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

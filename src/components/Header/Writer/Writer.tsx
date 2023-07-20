@@ -110,13 +110,13 @@ for (let i = 1; i <= 100; i++) {
 
   return (
     <motion.div
-      className="grid w-full grid-cols-2 px-2 py-6 pt-1.5"
+      className="grid w-full grid-cols-2 px-2 pt-1.5"
       initial={{ opacity: 0 }}
       animate={{ y: "0rem", opacity: 1 }}
       exit={{ height: 0, overflow: "hidden", opacity: 0 }}
     >
       <Editor
-        className="relative -left-4 h-[calc(100vh-8.5rem)]"
+        className="relative -left-4"
         language="markdown"
         defaultValue={initialMdx}
         loading={null}

@@ -56,7 +56,7 @@ export default function Header(props: {
     >
       {/* Header */}
       <motion.div
-        className={`absolute top-0 mx-auto my-6 flex h-12 w-[80vw] max-w-[42rem] justify-center rounded-2xl bg-white/50 backdrop-blur-xl`}
+        className={`absolute top-0 mx-auto my-6 flex h-[90vh] w-[80vw] max-w-[42rem] justify-center rounded-2xl bg-white/50 backdrop-blur-xl`}
         initial={{
           opacity: 0,
           width: "80vw",
@@ -65,7 +65,7 @@ export default function Header(props: {
         }}
         animate={{
           opacity: 1,
-          height: writingPost === false ? "3rem" : "85vh",
+          height: writingPost === false ? "3rem" : "90vh",
           width: writingPost === false ? "80vw" : "95vw",
           maxWidth: writingPost === false ? "42rem" : "95vw",
           // display: writingPost === false ? "static" : "relative",

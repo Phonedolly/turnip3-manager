@@ -15,9 +15,10 @@ import "katex/dist/katex.min.css";
 import rehypeMdxCodeProps from "rehype-mdx-code-props";
 import remarkGfm from "remark-gfm";
 
+import monacoConfig from "./MonacoEditor/MonacoConfig";
+
 export default function Writer(props: {
   setCurPost: React.Dispatch<React.SetStateAction<IPost>>;
-  monacoConfig: editor.IStandaloneEditorConstructionOptions;
 }) {
   function makeMdx(newMdx: string) {
     const { default: compiledMdx, frontmatter } = evaluateSync(newMdx, {
@@ -87,7 +88,7 @@ for (let i = 1; i <= 100; i++) {
 }
 \`\`\`
 `;
-  const { monacoConfig, setCurPost } = props;
+  const { setCurPost } = props;
   const initialCompiledMdx = makeMdx(initialMdx);
   const [mdxHasProblem, setMdxHasProblem] = useState<boolean>(false);
 
@@ -108,47 +109,45 @@ for (let i = 1; i <= 100; i++) {
   // }, []);
 
   return (
-    
-      <motion.div
-        className="grid w-full grid-cols-2 px-2 py-6 pt-1.5"
-        initial={{ opacity: 0 }}
-        animate={{ y: "0rem", opacity: 1 }}
-        exit={{ height: 0, overflow: "hidden", opacity: 0 }}
-      >
-        <Editor
-          className="relative -left-4 h-[calc(100vh-8.5rem)]"
-          language="markdown"
-          defaultValue={initialMdx}
-          loading={null}
-          theme="turnip3"
-          options={monacoConfig}
-          onChange={(mdx) => {
-            try {
-              const { content: compiledMdx, frontmatter } = makeMdx(mdx || "");
-              console.log("MDX Compile success!");
-              setContent(compiledMdx);
-              setMdxHasProblem(false);
-              setCurPost((prev) => ({
-                ...prev,
-                // curTitle: frontmatter?.title || "",
-              }));
-              console.log("Apply Success");
-            } catch (e) {
-              setMdxHasProblem(true);
-              console.error(e);
-              console.log("MDX compile error!");
-            }
-          }}
-        />
-        <div className="h1 max-h-[calc(100vh-8.5rem)] overflow-y-auto px-7 py-1">
-          {mdxHasProblem === true ? (
-            <h1 className="text-md flex animate-pulse flex-row items-center justify-center rounded-md bg-red-200/60 px-0.5 py-1 font-mono font-bold text-red-500">
-              Now MDX File Has a Problem!
-            </h1>
-          ) : null}
-          <div className="flex flex-col [&>:not(first)]:pt-3">{Content}</div>
-        </div>
-      </motion.div>
-    
+    <motion.div
+      className="grid w-full grid-cols-2 px-2 py-6 pt-1.5"
+      initial={{ opacity: 0 }}
+      animate={{ y: "0rem", opacity: 1 }}
+      exit={{ height: 0, overflow: "hidden", opacity: 0 }}
+    >
+      <Editor
+        className="relative -left-4 h-[calc(100vh-8.5rem)]"
+        language="markdown"
+        defaultValue={initialMdx}
+        loading={null}
+        theme="turnip3"
+        options={monacoConfig}
+        onChange={(mdx) => {
+          try {
+            const { content: compiledMdx, frontmatter } = makeMdx(mdx || "");
+            console.log("MDX Compile success!");
+            setContent(compiledMdx);
+            setMdxHasProblem(false);
+            setCurPost((prev) => ({
+              ...prev,
+              curTitle: frontmatter?.title || "",
+            }));
+            console.log("Apply Success");
+          } catch (e) {
+            setMdxHasProblem(true);
+            console.error(e);
+            console.log("MDX compile error!");
+          }
+        }}
+      />
+      <div className="h1 max-h-[calc(100vh-8.5rem)] overflow-y-auto px-7 py-1">
+        {mdxHasProblem === true ? (
+          <h1 className="text-md flex animate-pulse flex-row items-center justify-center rounded-md bg-red-200/60 px-0.5 py-1 font-mono font-bold text-red-500">
+            Now MDX File Has a Problem!
+          </h1>
+        ) : null}
+        <div className="flex flex-col [&>:not(first)]:pt-3">{Content}</div>
+      </div>
+    </motion.div>
   );
 }

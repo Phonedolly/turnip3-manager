@@ -9,55 +9,54 @@ interface IHierarchicalInfo {
   curBlogName: string;
 }
 
-export default function HierarchicalInfo(props: IHierarchicalInfo) {
-  const { curTitle, curBlogName, curCategory } = props;
+const defaultVariants: Variants = {
+  hidden: { opacity: 0, x: "-1.5rem" },
+  visible: {
+    x: "0rem",
+    opacity: 1,
+    transition: { delayChildren: 1, staggerChildren: 0.5, delay: 0.3 },
+  },
+  exit: { opacity: 0 },
+};
 
-  const defaultVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { delayChildren: 1, staggerChildren: 0.5 },
-    },
-    exit: { opacity: 0 },
-  };
-  const HiearchicalBox = (props: { boxName: string; boxValue: string }) => {
-    const [isHover, setIsHover] = useState<boolean>(false);
-    // console.log(curPost.initiate);
-    return (
-      <div className="relative">
-        <motion.div
-          className="flex h-7 cursor-pointer select-none flex-row items-center gap-1.5 rounded-lg bg-neutral-200/60 px-2 py-1"
-          initial={{ opacity: 0, x: "2rem" }}
-          animate={{ opacity: 1, x: "0rem" }}
-          whileHover={{
-            backgroundColor: "rgb(240,240,240)",
-            color: "rgb(163,163,163)",
-            scale: 0.985,
-            boxShadow: "0px 2.5px 4px 2px rgba(0,0,0,0.12)",
-            transition: { duration: 0.1 },
-          }}
-          onMouseEnter={() => setIsHover(true)}
-          onMouseLeave={() => setIsHover(false)}
+const HiearchicalBox = memo((props: { boxName: string; boxValue: string }) => {
+  const [isHover, setIsHover] = useState<boolean>(false);
+  // console.log(curPost.initiate);
+  return (
+    <div className="relative">
+      <motion.div
+        className="flex h-7 cursor-pointer select-none flex-row items-center gap-1.5 rounded-lg bg-neutral-200/60 px-2 py-1"
+        initial={{ opacity: 0, x: "2rem" }}
+        animate={{ opacity: 1, x: "0rem" }}
+        whileHover={{
+          backgroundColor: "rgb(240,240,240)",
+          color: "rgb(163,163,163)",
+          scale: 0.985,
+          boxShadow: "0px 2.5px 4px 2px rgba(0,0,0,0.12)",
+          transition: { duration: 0.1 },
+        }}
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+      >
+        <h1
+          className={`text-xs font-bold ${
+            isHover ? `text-neutral-500` : `text-neutral-600`
+          }`}
+          key={uuid()}
         >
-          <h1
-            className={`text-xs font-bold ${
-              isHover ? `text-neutral-500` : `text-neutral-600`
-            }`}
-            key={uuid()}
-          >
-            {props.boxName.toUpperCase()}
-          </h1>
-          <h1 className="text-md text-neutral-600" key={uuid()}>
-            |
-          </h1>
-          <h1
-            className="overflow-hidden text-ellipsis whitespace-nowrap text-xs sm:max-w-[5rem] md:max-w-[9rem] lg:max-w-[12rem] xl:max-w-[15rem] 2xl:max-w-[18rem]"
-            key={uuid()}
-          >
-            {props.boxValue}
-          </h1>
-        </motion.div>
-
+          {props.boxName.toUpperCase()}
+        </h1>
+        <h1 className="text-md text-neutral-600" key={uuid()}>
+          |
+        </h1>
+        <h1
+          className="overflow-hidden text-ellipsis whitespace-nowrap text-xs sm:max-w-[5rem] md:max-w-[9rem] lg:max-w-[12rem] xl:max-w-[15rem] 2xl:max-w-[18rem]"
+          key={uuid()}
+        >
+          {props.boxValue}
+        </h1>
+      </motion.div>
+      <AnimatePresence>
         {isHover === true ? (
           <motion.span
             className="absolute top-8 flex w-full flex-row items-center justify-center"
@@ -77,29 +76,35 @@ export default function HierarchicalInfo(props: IHierarchicalInfo) {
             </div>
           </motion.span>
         ) : null}
-      </div>
-    );
-  };
-  const mustEqual = () => true;
+      </AnimatePresence>
+    </div>
+  );
+});
+
+function HierarchicalInfo(props: IHierarchicalInfo) {
+  const { curTitle, curBlogName, curCategory } = props;
 
   return (
-    <motion.div
-      className="z-10 flex h-12 flex-row items-center px-1"
-      // variants={defaultVariants}
-      // initial="hidden"
-      // animate="visible"
-      exit="exit"
-
-    >
-      <HiearchicalBox boxName="CATEGORY" boxValue={curBlogName} />
-      <RightArrow />
-      <HiearchicalBox boxName="CATERGORY" boxValue={curCategory} />
-      <RightArrow       key={uuid()}/>
-      <HiearchicalBox
-        boxName="TITLE"
-        boxValue={curTitle}
-        // key={uuid()}
-      />
-    </motion.div>
+    <AnimatePresence>
+      <motion.div
+        className="z-10 flex h-12 flex-row items-center px-1"
+        variants={defaultVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+        <HiearchicalBox boxName="BLOG" boxValue={curBlogName} />
+        <RightArrow />
+        <HiearchicalBox boxName="CATERGORY" boxValue={curCategory} />
+        <RightArrow />
+        <HiearchicalBox
+          boxName="TITLE"
+          boxValue={curTitle}
+          // key={uuid()}
+        />
+      </motion.div>
+    </AnimatePresence>
   );
 }
+
+export default memo(HierarchicalInfo);

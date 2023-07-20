@@ -1,12 +1,19 @@
-import { cloneElement, useEffect, useMemo, useRef, useState } from "react";
+import {
+  cloneElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { v4 as uuid } from "uuid";
 
 import { motion, AnimatePresence, useAnimate, animate } from "framer-motion";
-import monacoConfig from "./MonacoEditor/MonacoConfig";
+import monacoConfig from "./Writer/MonacoEditor/Turnip3Theme";
 import HeaderContentForNotWriting from "./HeaderContentForNotWriting";
 import HeaderContentForWriting from "./HeaderContentForWriting";
 import { useMonaco } from "@monaco-editor/react";
-import Turnip3Theme from "./MonacoEditor/Turnip3Theme";
+import Turnip3Theme from "./Writer/MonacoEditor/Turnip3Theme";
 
 export default function Header(props: {
   blogs: Blog[];
@@ -26,8 +33,7 @@ export default function Header(props: {
   // const [closeBtnScope, animateCloseBtn] = useAnimate();
   // const [userBtnScope, animateUserBtn] = useAnimate();
   const [writingPost, setWritingPost] = useState<boolean>(false);
-  const [openWriterComplete, setOpenWriterComplete] = useState<boolean>(false);
-  const [curPost, setCurBlog] = useState<IPost>({
+  const [curPost, setCurPost] = useState<IPost>({
     curBlog: blogs[0],
     curCategory: "",
     curDate: "",
@@ -67,7 +73,7 @@ export default function Header(props: {
           transition: { duration: 0.5, type: "spring" },
         }}
         onMouseEnter={() => {
-          if (writingPost === true && openWriterComplete === false) {
+          if ((writingPost === true) === false) {
             return;
           }
           animate(headerScope.current, {
@@ -91,19 +97,18 @@ export default function Header(props: {
         ref={headerScope}
         layout
       >
-          {writingPost === true ? (
-            <HeaderContentForWriting
-              setCurPost={setCurBlog}
-              curPost={curPost}
-              monacoConfig={monacoConfig}
-              setWritingPost={setWritingPost}
-            />
-          ) : (
-            <HeaderContentForNotWriting
-              setShowNavBar={setShowNavBar}
-              setWritingPost={setWritingPost}
-            />
-          )}
+        {writingPost === true ? (
+          <HeaderContentForWriting
+            setCurPost={setCurPost}
+            curPost={curPost}
+            setWritingPost={setWritingPost}
+          />
+        ) : (
+          <HeaderContentForNotWriting
+            setShowNavBar={setShowNavBar}
+            setWritingPost={setWritingPost}
+          />
+        )}
       </motion.div>
     </div>
   );

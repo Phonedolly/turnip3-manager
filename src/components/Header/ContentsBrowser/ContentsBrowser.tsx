@@ -86,7 +86,7 @@ const UpperDir = () => (
   </div>
 );
 
-const ContentBrowser = (props: {
+const ContentsBrowser = (props: {
   setViewContentBrowser: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const contentBrowserVariant = {
@@ -120,11 +120,11 @@ const ContentBrowser = (props: {
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center">
               <FolderIcon />
-              <h1 className="text-md select-none font-bold">Content Browser</h1>
+              <h1 className="text-md select-none font-bold">Contents Browser</h1>
             </div>
             <RightButtons setViewContentBrowser={props.setViewContentBrowser} />
           </div>
-          <div className="m-1.5 h-full rounded-lg bg-neutral-200/70 p-1.5">
+          <div className="m-1.5 h-full rounded-lg bg-neutral-200/50 p-1.5">
             <UpperDir />
             {testData.map((item) => {
               if (item.itemType === "folder") {
@@ -189,4 +189,4 @@ const ContentBrowser = (props: {
   );
 };
 
-export default ContentBrowser;
+export default ContentsBrowser;

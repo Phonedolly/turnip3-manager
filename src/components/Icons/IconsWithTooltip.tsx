@@ -3,7 +3,7 @@ import FoldersIcon from "./FoldersIcon";
 import HelpIcon from "./HelpIcon";
 import IconWithTooltip from "./IconWithTooltip";
 import SettingsIcon from "./SettingsIcon";
-import ContentBrowser from "../Header/ContentBrowser/ContentBrowser";
+import ContentsBrowser from "../Header/ContentsBrowser/ContentsBrowser";
 import { useState } from "react";
 import defaultVariants from "../../variants/defaultVariants";
 import SubmitIcon from "./SubmitIcon";
@@ -26,18 +26,18 @@ export const HelpIconWithTooltip = (props: TooltipProps) => {
 };
 
 export const FoldersIconWithTooltip = (props: TooltipProps) => {
-  const [viewContentBrowser, setViewContentBrowser] = useState<boolean>(false);
+  const [viewContentsBrowser, setViewContentsBrowser] = useState<boolean>(false);
   return (
     <>
       <IconWithTooltip
         tooltipValue={props.tooltipValue}
-        onClick={() => setViewContentBrowser(true)}
+        onClick={() => setViewContentsBrowser(true)}
       >
         <FoldersIcon />
       </IconWithTooltip>
       <AnimatePresence>
-        {viewContentBrowser === true ? (
-          <ContentBrowser setViewContentBrowser={setViewContentBrowser} />
+        {viewContentsBrowser === true ? (
+          <ContentsBrowser setViewContentsBrowser={setViewContentsBrowser} />
         ) : null}
       </AnimatePresence>
     </>

@@ -92,45 +92,27 @@ const SubmitIconWithTooltip = () => {
   return (
     <IconWithTooltip tooltipValue="Upload Post!">
       <motion.div
-        onHoverStart={async () => {
-          setIsAnimationStart(true);
-
-          setAnimation1(
-            animate(iconScope.current, {
-              rotate: -45,
-              y: 3,
-              scale: 1.3,
-              filter: "drop-shadow(0px 0px 2px rgba(255,255,0,0.7))",
-            })
-          );
-          animation1?.pause();
-          setAnimation2(
-            animate(
-              iconScope.current,
-              {
-                y: [3, -3, 3],
-              },
-              { duration: 0.65, repeat: Infinity, repeatType: "loop" }
-            )
-          );
-          animation2?.pause();
-          animation1?.play();
-          animation1?.then(() => {
-            animation2?.play();
-          });
+        initial={{
+          y: 0,
+          rotate: 0,
+          filter:
+            "invert(0%) sepia(100%) saturate(7438%) hue-rotate(327deg) brightness(114%) contrast(89%) drop-shadow(0px 0px 0px transparent)",
+          scale: 1,
         }}
-        onHoverEnd={() => {
-          setIsAnimationStart(false);
-          animation1?.stop();
-          animation2?.stop();
-          animate(iconScope.current, {
-            y: 0,
-            rotate: 0,
-            filter: "drop-shadow(0px 0px 0px transparent)",
-            scale: 1,
-          }).play();
+        whileHover={{
+          x: [0, 2],
+          y: [0, -4],
+          scale: [1, 1.3],
+          filter: [
+            "invert(0%) sepia(100%) saturate(7438%) hue-rotate(327deg) brightness(114%) contrast(89%) drop-shadow(0px 0px 6px black)",
+            "invert(86%) sepia(75%) saturate(647%) hue-rotate(359deg) brightness(105%) contrast(106%) drop-shadow(0px 0px 6px black)",
+          ],
+          transition: {
+            duration: 1.005,
+            repeat: Infinity,
+            repeatType: "reverse",
+          },
         }}
-        ref={iconScope}
       >
         <SubmitIcon />
       </motion.div>

@@ -57,10 +57,50 @@ const IconWithTooltip = (props: {
 };
 
 const FolderIconWithTooltip = () => {
+  const [viewContentBrowser, setViewContentBrowser] = useState<boolean>(false);
   return (
-    <IconWithTooltip tooltipValue="Show Workspace">
-      <FolderIcon />
-    </IconWithTooltip>
+    <div onClick={() => setViewContentBrowser(true)}>
+      <IconWithTooltip tooltipValue="Show Workspace">
+        <FolderIcon />
+      </IconWithTooltip>
+      {viewContentBrowser === true ? (
+        <ContentBrowser setViewContentBrowser={setViewContentBrowser} />
+      ) : null}
+    </div>
+  );
+};
+
+const ContentBrowser = (props: {
+  setViewContentBrowser: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed bottom-0 left-0 right-0 top-0 z-40 flex flex-row items-center justify-center rounded-2xl bg-neutral-400/50"
+        variants={defaultVariants}
+        initial="initial"
+        animate="visible"
+        exit="exit"
+      >
+        <motion.div
+          className="z-[60] flex h-3/4 w-2/3 flex-col items-center  justify-center rounded-2xl bg-neutral-200/95 shadow-[0px_4px_4px_4px_rgba(0,0,0,0.2)]"
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            transition: { type: "spring", duration: 0.5 },
+          }}
+          exit={{
+            opacity: 0,
+            scale: 0.5,
+            transition: { type: "spring", duration: 0.5 },
+          }}
+          onClick={() => {
+            props.setViewContentBrowser(false);
+          }}
+        ></motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
@@ -92,7 +132,10 @@ const SubmitIconWithTooltip = () => {
   return (
     <IconWithTooltip tooltipValue="Upload Post!">
       <motion.div
-        initial={{
+        variants={defaultVariants}
+        initial="initial"
+        animate={{
+          opacity: 1,
           y: 0,
           rotate: 0,
           filter:
@@ -102,13 +145,13 @@ const SubmitIconWithTooltip = () => {
         whileHover={{
           x: [0, 2],
           y: [0, -4],
-          scale: [1, 1.3],
+          scale: [1, 1.15],
           filter: [
-            "invert(0%) sepia(100%) saturate(7438%) hue-rotate(327deg) brightness(114%) contrast(89%) drop-shadow(0px 0px 6px black)",
-            "invert(86%) sepia(75%) saturate(647%) hue-rotate(359deg) brightness(105%) contrast(106%) drop-shadow(0px 0px 6px black)",
+            "invert(0%) sepia(100%) saturate(7438%) hue-rotate(327deg) brightness(114%) contrast(89%) drop-shadow(0px 0px 3px rgba(0,0,0,0.2))",
+            "invert(86%) sepia(75%) saturate(647%) hue-rotate(359deg) brightness(105%) contrast(106%) drop-shadow(0px 0px 6px rgba(0,0,0,0.9))",
           ],
           transition: {
-            duration: 1.005,
+            duration: 1.00,
             repeat: Infinity,
             repeatType: "reverse",
           },

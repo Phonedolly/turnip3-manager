@@ -1,7 +1,7 @@
 import { editor } from "monaco-editor";
 
 const config: editor.IStandaloneEditorConstructionOptions = {
-  fontSize: 15,
+  fontSize: 14,
   fontFamily: "Cascadia Mono, Spoqa Han Sans Neo",
   minimap: { enabled: false },
   wordWrap: "on",

@@ -82,7 +82,10 @@ const SettingsIconWithTooltip = () => {
 
 const SubmitIconWithTooltip = () => {
   const [isAnimationStart, setIsAnimationStart] = useState<boolean>(false);
-  const [animation, setAnimation] = useState<
+  const [animation1, setAnimation1] = useState<
+    AnimationPlaybackControls | undefined
+  >();
+  const [animation2, setAnimation2] = useState<
     AnimationPlaybackControls | undefined
   >();
   const [iconScope, animateIcon] = useAnimate();
@@ -92,28 +95,40 @@ const SubmitIconWithTooltip = () => {
         onHoverStart={async () => {
           setIsAnimationStart(true);
 
-          animate(iconScope.current, {
-            rotate: -45,
-            y: 3,
-            scale: 1.3,
-            filter: "drop-shadow(0px 2px 10px yellow)",
-          }).then(() => {
-            setAnimation(
-              animate(
-                iconScope.current,
-                {
-                  y: [3, -3, 3],
-                },
-                { duration: 0.65, repeat: Infinity, repeatType: "loop" }
-              )
-            );
+          setAnimation1(
+            animate(iconScope.current, {
+              rotate: -45,
+              y: 3,
+              scale: 1.3,
+              filter: "drop-shadow(0px 0px 2px rgba(255,255,0,0.7))",
+            })
+          );
+          animation1?.pause();
+          setAnimation2(
+            animate(
+              iconScope.current,
+              {
+                y: [3, -3, 3],
+              },
+              { duration: 0.65, repeat: Infinity, repeatType: "loop" }
+            )
+          );
+          animation2?.pause();
+          animation1?.play();
+          animation1?.then(() => {
+            animation2?.play();
           });
         }}
         onHoverEnd={() => {
           setIsAnimationStart(false);
-          animation?.pause();
-          animate(iconScope.current, { y: 0, rotate: 0, filter: "", scale: 1 });
-          animation?.complete();
+          animation1?.stop();
+          animation2?.stop();
+          animate(iconScope.current, {
+            y: 0,
+            rotate: 0,
+            filter: "drop-shadow(0px 0px 0px transparent)",
+            scale: 1,
+          }).play();
         }}
         ref={iconScope}
       >

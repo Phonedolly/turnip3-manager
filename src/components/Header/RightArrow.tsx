@@ -2,7 +2,6 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 
 function RightArrow() {
-  console.log("re");
   return (
     <motion.svg
       className="h-9 w-9 p-2"

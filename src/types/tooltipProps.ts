@@ -1,0 +1,3 @@
+interface TooltipProps {
+  tooltipValue: string;
+}

@@ -32,7 +32,6 @@ export default function Writer(props: {
         remarkMdxFrontmatter,
       ],
     });
-    console.log(frontmatter);
     const content = compiledMdx({
       components,
     });

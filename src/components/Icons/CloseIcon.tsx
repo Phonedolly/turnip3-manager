@@ -1,14 +1,14 @@
 /* https://www.svgrepo.com/svg/503004/close */
 
 import { motion } from "framer-motion";
-import rightButtonsVariants from "../Variants/RightButtonsVariants";
+import rightButtonsVariants from "../Header/Variants/RightButtonsVariants";
 
 const CloseIcon = (props: {
   setWritingPost?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
     <motion.svg
-      className={`mr-1.5 h-9 w-9 cursor-pointer p-1`}
+      className={`h-9 w-9 cursor-pointer p-1`}
       onClick={() => {
         props?.setWritingPost && props.setWritingPost(false);
       }}

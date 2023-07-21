@@ -1,9 +1,9 @@
 /* https://www.svgrepo.com/svg/458709/folder-dublicate */
 
 import { motion } from "framer-motion";
-import rightButtonsVariants from "../Variants/RightButtonsVariants";
+import rightButtonsVariants from "../Header/Variants/RightButtonsVariants";
 
-const FolderIcon = () => {
+const FoldersIcon = () => {
   return (
     <motion.svg
       className="z-30 h-9 w-9 cursor-pointer p-1"
@@ -25,4 +25,4 @@ const FolderIcon = () => {
   );
 };
 
-export default FolderIcon;
+export default FoldersIcon;

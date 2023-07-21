@@ -1,7 +1,7 @@
 /* https://www.svgrepo.com/svg/497505/setting-2 */
 
 import { motion } from "framer-motion";
-import rightButtonsVariants from "../Variants/RightButtonsVariants";
+import rightButtonsVariants from "../Header/Variants/RightButtonsVariants";
 
 const SettingsIcon = () => {
   return (

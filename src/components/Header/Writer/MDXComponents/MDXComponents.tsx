@@ -17,7 +17,6 @@ const components: MDXComponents = {
   h3: (props) => <h3 {...props} className="my-0.5 py-1.5 text-xl font-bold" />,
   h4: (props) => <h4 {...props} className="my-0 py-1 text-lg font-bold " />,
   pre: (props) => {
-    console.log(props);
     const langClassName = props.children?.props?.className || "";
     const code = props.children?.props.children?.trim() || "";
     const language = langClassName.replace(/language-/, "");
@@ -93,8 +92,6 @@ const components: MDXComponents = {
     );
   },
   span: (props) => {
-    console.log(props.className);
-    console.log(props.style);
     if (props.className?.includes("math math-inline")) {
       return <span {...props} className={`${props.className} select-none`} />;
     } else if (props.className === "katex-display") {

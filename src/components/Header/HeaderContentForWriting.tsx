@@ -12,166 +12,14 @@ import Writer from "./Writer/Writer";
 
 import { memo, useCallback, useMemo, useState } from "react";
 import HierarchicalInfo from "./HierarchicalInfo";
-import FolderIcon from "./Icons/FolderIcon";
-import HelpIcon from "./Icons/HelpIcon";
-import SettingsIcon from "./Icons/SettingsIcon";
-import CloseIcon from "./Icons/CloseIcon";
 import defaultVariants from "../../variants/defaultVariants";
-import SubmitIcon from "./Icons/SubmitIcon";
-
-const IconWithTooltip = (props: {
-  tooltipValue: string;
-  children: JSX.Element;
-}) => {
-  const [isHover, setIsHover] = useState<boolean>(false);
-  return (
-    <div
-      className="relative flex flex-row items-center justify-center"
-      onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
-    >
-      {props.children}
-      <AnimatePresence>
-        {isHover === true ? (
-          <motion.span
-            className="absolute left-0 right-0 top-10 flex w-auto flex-row items-center justify-center"
-            initial={{ opacity: 0, y: "-0.5rem" }}
-            animate={{
-              opacity: 1,
-              y: "0rem",
-              transition: { delay: 0.03, duration: 0.125 },
-            }}
-            exit={{
-              opacity: 0,
-              y: "-0.5rem",
-            }}
-          >
-            <div className="absolute top-0.5 rounded-lg bg-neutral-100 px-2.5 py-1  text-center text-xs text-neutral-700 shadow-[0px_1.8px_10px_2.5px_rgba(0,0,0,0.2)]">
-              <h1 className="font-bold">{props.tooltipValue}</h1>
-            </div>
-          </motion.span>
-        ) : null}
-      </AnimatePresence>
-    </div>
-  );
-};
-
-const FolderIconWithTooltip = () => {
-  const [viewContentBrowser, setViewContentBrowser] = useState<boolean>(false);
-  return (
-    <div onClick={() => setViewContentBrowser(true)}>
-      <IconWithTooltip tooltipValue="Show Workspace">
-        <FolderIcon />
-      </IconWithTooltip>
-      {viewContentBrowser === true ? (
-        <ContentBrowser setViewContentBrowser={setViewContentBrowser} />
-      ) : null}
-    </div>
-  );
-};
-
-const ContentBrowser = (props: {
-  setViewContentBrowser: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  return (
-    <AnimatePresence>
-      <motion.div
-        className="fixed bottom-0 left-0 right-0 top-0 z-40 flex flex-row items-center justify-center rounded-2xl bg-neutral-400/50"
-        variants={defaultVariants}
-        initial="initial"
-        animate="visible"
-        exit="exit"
-      >
-        <motion.div
-          className="z-[60] flex h-3/4 w-2/3 flex-col items-center  justify-center rounded-2xl bg-neutral-200/95 shadow-[0px_4px_4px_4px_rgba(0,0,0,0.2)]"
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-            transition: { type: "spring", duration: 0.5 },
-          }}
-          exit={{
-            opacity: 0,
-            scale: 0.5,
-            transition: { type: "spring", duration: 0.5 },
-          }}
-          onClick={() => {
-            props.setViewContentBrowser(false);
-          }}
-        ></motion.div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
-
-const HelpIconWithTooltip = () => {
-  return (
-    <IconWithTooltip tooltipValue="How to Use Writer?">
-      <HelpIcon />
-    </IconWithTooltip>
-  );
-};
-
-const SettingsIconWithTooltip = () => {
-  return (
-    <IconWithTooltip tooltipValue="Post Settings">
-      <SettingsIcon />
-    </IconWithTooltip>
-  );
-};
-
-const SubmitIconWithTooltip = () => {
-  const [isAnimationStart, setIsAnimationStart] = useState<boolean>(false);
-  const [animation1, setAnimation1] = useState<
-    AnimationPlaybackControls | undefined
-  >();
-  const [animation2, setAnimation2] = useState<
-    AnimationPlaybackControls | undefined
-  >();
-  const [iconScope, animateIcon] = useAnimate();
-  return (
-    <IconWithTooltip tooltipValue="Upload Post!">
-      <motion.div
-        variants={defaultVariants}
-        initial="initial"
-        animate={{
-          opacity: 1,
-          y: 0,
-          rotate: 0,
-          filter:
-            "invert(0%) sepia(100%) saturate(7438%) hue-rotate(327deg) brightness(114%) contrast(89%) drop-shadow(0px 0px 0px transparent)",
-          scale: 1,
-        }}
-        whileHover={{
-          x: [0, 2],
-          y: [0, -4],
-          scale: [1, 1.15],
-          filter: [
-            "invert(0%) sepia(100%) saturate(7438%) hue-rotate(327deg) brightness(114%) contrast(89%) drop-shadow(0px 0px 3px rgba(0,0,0,0.2))",
-            "invert(86%) sepia(75%) saturate(647%) hue-rotate(359deg) brightness(105%) contrast(106%) drop-shadow(0px 0px 6px rgba(0,0,0,0.9))",
-          ],
-          transition: {
-            duration: 1.00,
-            repeat: Infinity,
-            repeatType: "reverse",
-          },
-        }}
-      >
-        <SubmitIcon />
-      </motion.div>
-    </IconWithTooltip>
-  );
-};
-
-const CloseIconWithTooltip = (props: {
-  setWritingPost: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  return (
-    <IconWithTooltip tooltipValue="Close Writer">
-      <CloseIcon setWritingPost={props.setWritingPost} />
-    </IconWithTooltip>
-  );
-};
+import {
+  CloseIconWithTooltip,
+  FoldersIconWithTooltip,
+  HelpIconWithTooltip,
+  SettingsIconWithTooltip,
+  SubmitIconWithTooltip,
+} from "../Icons/IconsWithTooltip";
 
 const BlogIcon = (props: { curBlogLogoUrl: string }) => {
   return (
@@ -180,7 +28,7 @@ const BlogIcon = (props: { curBlogLogoUrl: string }) => {
         className="h-9 w-9 p-1.5"
         variants={defaultVariants}
         initial="initial"
-        animate="visible"
+        animate="animate"
         whileHover="whileHover"
         exit="exit"
       >
@@ -194,13 +42,20 @@ const RightButtons = memo(
   (props: {
     setWritingPost: React.Dispatch<React.SetStateAction<boolean>>;
   }) => (
-    <motion.div className="z-30 flex flex-row items-center">
-      <SubmitIconWithTooltip key={uuid()} />
-      <FolderIconWithTooltip key={uuid()} />
-      <HelpIconWithTooltip key={uuid()} />
-      <SettingsIconWithTooltip key={uuid()} />
+    <motion.div
+      className="z-30 flex flex-row items-center"
+      // variants={defaultVariants}
+      // initial={{ x: "1.5rem", opacity: 0 }}
+      // animate={{ x: "0rem", opacity: 1, transition: { delay: 0.3 } }}
+      // exit="exit"
+    >
+      <SubmitIconWithTooltip tooltipValue="Upload Post!" key={uuid()} />
+      <FoldersIconWithTooltip tooltipValue="Show Workspace" key={uuid()} />
+      <HelpIconWithTooltip tooltipValue="How to Use Writer?" key={uuid()} />
+      <SettingsIconWithTooltip tooltipValue="Post Settings" key={uuid()} />
       <CloseIconWithTooltip
-        setWritingPost={props.setWritingPost}
+        tooltipValue="Close Writer"
+        clickHandler={props.setWritingPost}
         key={uuid()}
       />
     </motion.div>
@@ -219,7 +74,7 @@ const Header = memo(
     return (
       <AnimatePresence>
         <motion.div
-          className={`flex w-full flex-row items-center justify-between`}
+          className="flex w-full flex-row items-center justify-between px-1.5"
           variants={defaultVariants}
           initial="initial"
           animate={{
@@ -228,7 +83,7 @@ const Header = memo(
           }}
           exit="exit"
         >
-          <div key={uuid()} className="ml-2 flex flex-row items-center">
+          <div key={uuid()} className=" flex flex-row items-center">
             <BlogIcon curBlogLogoUrl={props.curBlogLogoUrl} />
             <HierarchicalInfo
               curBlogName={props.curBlogName}

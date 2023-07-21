@@ -11,7 +11,7 @@ interface IHierarchicalInfo {
 
 const defaultVariants: Variants = {
   hidden: { opacity: 0, x: "-1.5rem" },
-  visible: {
+  animate: {
     x: "0rem",
     opacity: 1,
     transition: { delayChildren: 1, staggerChildren: 0.5, delay: 0.3 },
@@ -21,7 +21,6 @@ const defaultVariants: Variants = {
 
 const HiearchicalBox = memo((props: { boxName: string; boxValue: string }) => {
   const [isHover, setIsHover] = useState<boolean>(false);
-  // console.log(curPost.initiate);
   return (
     <div className="relative">
       <motion.div
@@ -71,7 +70,7 @@ const HiearchicalBox = memo((props: { boxName: string; boxValue: string }) => {
               y: "-0.5rem",
             }}
           >
-            <div className="absolute top-0.5  rounded-lg text-center bg-neutral-100 px-2.5  py-1 text-xs text-neutral-700 shadow-[0px_1.8px_10px_2.5px_rgba(0,0,0,0.2)]">
+            <div className="absolute top-0.5  rounded-lg bg-neutral-50 px-2.5 py-1  text-center text-xs text-neutral-700 shadow-[0px_1.8px_10px_2.5px_rgba(0,0,0,0.2)]">
               <h1 className="font-bold">{props.boxValue}</h1>
             </div>
           </motion.span>
@@ -90,7 +89,7 @@ function HierarchicalInfo(props: IHierarchicalInfo) {
         className=" z-10 mx-0.5 flex h-12 flex-row items-center px-1"
         variants={defaultVariants}
         initial="hidden"
-        animate="visible"
+        animate="animate"
         exit="exit"
       >
         <HiearchicalBox boxName="BLOG" boxValue={curBlogName} />

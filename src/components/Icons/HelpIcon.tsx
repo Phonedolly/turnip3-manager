@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import rightButtonsVariants from "../Variants/RightButtonsVariants";
+import rightButtonsVariants from "../Header/Variants/RightButtonsVariants";
 {
   /* https://www.svgrepo.com/svg/488991/help */
 }

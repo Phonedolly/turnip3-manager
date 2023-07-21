@@ -157,6 +157,7 @@ const ContentBrowser = (props: {
                 return (
                   <div className="flex w-full cursor-pointer flex-row items-center justify-between rounded-lg px-1.5 py-0.5 hover:bg-white">
                     <div className="flex flex-row items-center gap-0.5">
+                      {/* https://www.svgrepo.com/svg/509928/file */}
                       <svg
                         className="z-30 h-6 w-6 p-1"
                         xmlns="http://www.w3.org/2000/svg"

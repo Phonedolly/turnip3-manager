@@ -33,7 +33,7 @@ export default function App() {
             <NavBar />
             <Header />
           </ShowNavBarContext.Provider>
-          <div className="h-[calc(100vh-2.75rem)] overflow-y-auto pt-16">
+          <div className="h-[calc(100vh-2.75rem)] overflow-y-auto pt-16 overflow-x-hidden">
             <Home />
           </div>
         </GlobalStateContext.Provider>

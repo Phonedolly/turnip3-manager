@@ -3,12 +3,16 @@ import { v4 as uuid } from "uuid";
 import BlogsContext from "../contexts/BlogsContext";
 import { motion } from "framer-motion";
 import GlobalStateContext from "../contexts/GlobalStateContext";
+import Blog from "../components/Blog";
 
 export function Home() {
   const { blogs } = useContext(GlobalStateContext);
   return (
     <div className="mx-auto flex flex-col items-center px-12 py-3">
-      <div className="flex w-full select-none flex-row items-center justify-start">
+      <div
+        className="flex w-full select-none flex-row items-center justify-start"
+        key={uuid()}
+      >
         {/* https://www.svgrepo.com/svg/267086/radish */}
         <svg
           className="z-0 h-16 w-16 animate-header-helper-text p-1"
@@ -33,31 +37,27 @@ export function Home() {
             <path d="M409.978 323.434c-5.317-28.112-18.545-53.879-38.248-74.507-7.374-7.728-15.525-13.857-24.188-18.734 33.304-19.462 48.247-39.09 45.504-59.599-3.853-28.794-24.68-34.078-34.691-36.618-.612-.156-1.297-.329-1.97-.508.976-2.52 2.536-5.775 3.705-8.218 6.033-12.596 15.15-31.628 3.064-49.137-13.044-18.897-30.844-19.963-42.621-20.666-2.974-.178-7.361-.439-8.9-1.039-1.2-1.765-3.344-6.178-4.949-9.483C298.522 28.122 284.867 0 255.686 0h-.97c-29.179 0-42.836 28.123-50.994 44.925-1.598 3.291-3.729 7.68-4.934 9.459-1.613.623-5.962.885-8.916 1.061-11.779.703-29.578 1.769-42.621 20.666-12.238 17.726-2.332 36.811 4.222 49.439 1.226 2.363 2.85 5.493 3.921 7.975-.601.157-1.202.312-1.747.449-10.011 2.54-30.84 7.822-34.691 36.618-2.717 20.314 12.434 40.379 45.07 59.842-8.502 4.837-16.503 10.888-23.754 18.487-19.706 20.634-32.933 46.401-38.246 74.49-1.792 9.396-2.701 19.148-2.701 28.984 0 100.3 145.524 156.363 151.719 158.701a14.034 14.034 0 0010.124-.082c6.186-2.449 151.507-61.099 151.507-158.619-.001-9.831-.909-19.582-2.697-28.961zm-44.766-149.117c.838 6.254-9.545 22.097-52.955 42.677a176.315 176.315 0 00-9.838-1.888c-.51-.084-1.021-.164-1.53-.244a219.01 219.01 0 00-14.168-1.739l55.033-55.033c3.38 1.495 6.821 2.376 9.696 3.106 9.044 2.291 12.429 3.151 13.762 13.121zM170.361 92.063c5.036-7.295 10.73-7.962 21.188-8.587 8.131-.486 17.347-1.036 25.194-7.387 5.046-4.086 8.219-10.622 12.238-18.898 7.735-15.926 15.009-29.11 25.735-29.11h.97c10.727 0 18 13.184 25.735 29.109 4.018 8.277 7.193 14.814 12.242 18.901 7.843 6.348 17.059 6.899 25.19 7.385 10.46.625 16.154 1.292 21.19 8.587 2.628 3.808-.681 11.454-5.281 21.055-3.019 6.303-6.099 12.742-7.075 19.321l-57.649 57.649v-56.089c0-7.753-6.287-14.04-14.04-14.04-7.753 0-14.04 6.287-14.04 14.04v56.088l-57.722-57.722c-1.104-6.752-4.503-13.322-7.84-19.751-4.916-9.473-8.482-17.003-6.035-20.551zm28.457 125.132c-42.701-20.533-52.879-36.523-52.028-42.88 1.332-9.97 4.716-10.828 13.762-13.122 2.875-.73 6.315-1.609 9.695-3.103l55.03 55.03c-4.187.379-8.375.873-12.549 1.494a177.023 177.023 0 00-2.872.443c-3.824.62-7.501 1.328-11.038 2.138zm57.068 265.559c-24.429-10.334-128.48-58.585-128.48-130.359 0-8.073.741-16.055 2.209-23.742 4.306-22.769 15.013-43.634 30.969-60.342 11.065-11.596 24.819-18.532 39.941-22.637.136-.032.275-.045.41-.081 14.435-3.829 31.932-5.612 55.065-5.612 22.702 0 39.938 1.719 54.243 5.406.268.069.539.119.809.173 15.29 4.091 29.199 11.051 40.369 22.758 15.951 16.703 26.659 37.565 30.97 60.354 1.462 7.67 2.203 15.651 2.203 23.723-.001 69.638-104.286 119.615-128.708 130.359z"></path>
           </g>
         </svg>
-        <h1 className="text-4xl font-bold">Welcome to</h1>
-        <h1 className="ml-3 rounded-2xl bg-neutral-300/60 px-3 py-2 font-mono text-4xl font-bold">
+        <h1 className="text-4xl font-bold" key={uuid()}>
+          Welcome to
+        </h1>
+        <h1
+          className="ml-3 rounded-2xl bg-neutral-300/60 px-3 py-2 font-mono text-4xl font-bold"
+          key={uuid()}
+        >
           turnip3
         </h1>
-        <h1 className="ml-0.5 text-4xl font-bold">.</h1>
+        <h1 className="ml-0.5 text-4xl font-bold" key={uuid()}>
+          .
+        </h1>
       </div>
-
-      <div className="my-4 grid grid-cols-2 place-items-center items-center gap-14 py-4">
+      <div
+        className="my-4 grid grid-cols-2 place-items-center items-center gap-14 py-4"
+        key={uuid()}
+      >
         {blogs.length === 0 ? (
           <div>No Blogs Here!</div>
         ) : (
-          blogs.map((blog) => (
-            <motion.div
-              className="bg-white-1/2 flex h-40 w-full max-w-lg cursor-pointer select-none flex-col justify-center gap-y-3 break-all rounded-3xl px-6 py-6 shadow-[0_6px_20px_5px_rgba(0,0,0,0.16)] transition-all duration-300 hover:scale-[1.015] hover:overflow-visible hover:break-words hover:shadow-[0_6px_28px_7px_rgba(0,0,0,0.24)]"
-              key={uuid()}
-            >
-              <div className="flex flex-row items-center gap-2">
-                <img className="my-0.5 h-10 w-10 py-0.5" src={blog.logoUrl} />
-                <h1 className="text-2xl font-bold">{blog.name}</h1>
-              </div>
-              <h2 className="text-md font-mono text-neutral-500">
-                {blog.blogUrl}
-              </h2>
-            </motion.div>
-          ))
+          blogs.map((blog) => <Blog blog={blog} key={uuid()} />)
         )}
       </div>
     </div>

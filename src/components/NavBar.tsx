@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
+import BlogsContext from "../contexts/BlogsContext";
+import { motion } from "framer-motion";
 
 export default function NavBar(props: {
-  blogs: Blog[];
   showNavBar: boolean;
   setShowNavBar: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { showNavBar, setShowNavBar, blogs } = props;
+  const { showNavBar, setShowNavBar } = props;
+  const blogs = useContext(BlogsContext);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,8 +65,7 @@ export default function NavBar(props: {
           turnip3
         </h1>
       </div>
-      <Link
-        to="/"
+      <motion.div
         className="flex w-10/12 cursor-pointer flex-row items-center justify-start gap-3 rounded-md py-3 pl-5 duration-150 hover:bg-neutral-300/30"
         onClick={() => setShowNavBar(false)}
       >
@@ -87,17 +87,16 @@ export default function NavBar(props: {
         <h2 key={uuid()} className="text-md text-center ">
           Home
         </h2>
-      </Link>
+      </motion.div>
       {blogs.map((blog) => (
-        <Link
-          to={`/blog/${blog.id}`}
+        <motion.div
           onClick={() => setShowNavBar(false)}
           className="flex w-10/12 cursor-pointer flex-row items-center justify-start gap-3 rounded-md py-2.5 pl-5 transition-colors duration-150 hover:bg-neutral-300/30"
           key={uuid()}
         >
           <img className="h-6 w-6" src={blog.logoUrl} />
           <h2 className="text-md text-center ">{blog.name}</h2>
-        </Link>
+        </motion.div>
       ))}
     </nav>
   );

@@ -1,14 +1,16 @@
-import { useLoaderData, Link } from "react-router-dom";
+import { useContext } from "react";
 import { v4 as uuid } from "uuid";
+import BlogsContext from "../contexts/BlogsContext";
+import { motion } from "framer-motion";
 
 export function Home() {
-  const blogs = useLoaderData() as Blog[];
+  const blogs = useContext(BlogsContext);
   return (
     <div className="mx-auto flex flex-col items-center px-12 py-3">
       <div className="flex w-full select-none flex-row items-center justify-start">
         {/* https://www.svgrepo.com/svg/267086/radish */}
         <svg
-          className="h-16 w-16 animate-header-helper-text p-1 z-0"
+          className="z-0 h-16 w-16 animate-header-helper-text p-1"
           xmlns="http://www.w3.org/2000/svg"
           width="800"
           height="800"
@@ -42,10 +44,9 @@ export function Home() {
           <div>No Blogs Here!</div>
         ) : (
           blogs.map((blog) => (
-            <Link
+            <motion.div
               className="bg-white-1/2 flex h-40 w-full max-w-lg cursor-pointer select-none flex-col justify-center gap-y-3 break-all rounded-3xl px-6 py-6 shadow-[0_6px_20px_5px_rgba(0,0,0,0.16)] transition-all duration-300 hover:scale-[1.015] hover:overflow-visible hover:break-words hover:shadow-[0_6px_28px_7px_rgba(0,0,0,0.24)]"
               key={uuid()}
-              to={`/blog/${blog.id}`}
             >
               <div className="flex flex-row items-center gap-2">
                 <img className="my-0.5 h-10 w-10 py-0.5" src={blog.logoUrl} />
@@ -54,7 +55,7 @@ export function Home() {
               <h2 className="text-md font-mono text-neutral-500">
                 {blog.blogUrl}
               </h2>
-            </Link>
+            </motion.div>
           ))
         )}
       </div>

@@ -1,22 +1,14 @@
-import {
-  cloneElement,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
 import { motion, AnimatePresence, useAnimate, animate } from "framer-motion";
-import monacoConfig from "./Writer/MonacoEditor/Turnip3Theme";
 import HeaderContentForNotWriting from "./HeaderContentForNotWriting";
 import HeaderContentForWriting from "./HeaderContentForWriting";
 import { useMonaco } from "@monaco-editor/react";
 import Turnip3Theme from "./Writer/MonacoEditor/Turnip3Theme";
+import BlogsContext from "../../contexts/BlogsContext";
 
 export default function Header(props: {
-  blogs: Blog[];
   setShowNavBar: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const tempBlog: Blog = {
@@ -27,7 +19,8 @@ export default function Header(props: {
     name: "temp blog",
   };
 
-  const { blogs, setShowNavBar } = props;
+  const { setShowNavBar } = props;
+  const blogs = useContext(BlogsContext);
 
   // const [settingBtnScope, animateSettingBtn] = useAnimate();
   // const [closeBtnScope, animateCloseBtn] = useAnimate();

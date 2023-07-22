@@ -1,11 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { Outlet, Link, useLoaderData } from "react-router-dom";
-import { v4 as uuid } from "uuid";
-import TitleBar from "./components/TitleBar";
-import Header from "./components/Header/Header";
-import NavBar from "./components/NavBar";
+import { createContext } from "react";
 
-export async function blogsLoader(): Promise<Blog[]> {
+export function blogsLoader(): Blog[] {
   return [
     {
       logoUrl: "https://avatars.githubusercontent.com/in/715?s=48&v=4",
@@ -30,24 +25,6 @@ export async function blogsLoader(): Promise<Blog[]> {
   ];
 }
 
-export function Root() {
-  const blogs = useLoaderData() as Blog[];
-  const [showNavBar, setShowNavBar] = useState<boolean>(false);
+const BlogsContext = createContext<Blog[]>(blogsLoader());
 
-  return (
-    <div className="h-screen w-screen">
-      <TitleBar />
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center">
-        <NavBar
-          blogs={blogs}
-          showNavBar={showNavBar}
-          setShowNavBar={setShowNavBar}
-        />
-        <Header blogs={blogs} setShowNavBar={setShowNavBar} />
-        <div className="h-[calc(100vh-2.75rem)] overflow-y-auto pt-16">
-          <Outlet />
-        </div>
-      </div>
-    </div>
-  );
-}
+export default BlogsContext;

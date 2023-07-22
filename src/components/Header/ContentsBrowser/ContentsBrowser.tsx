@@ -87,7 +87,7 @@ const UpperDir = () => (
 );
 
 const ContentsBrowser = (props: {
-  setViewContentBrowser: React.Dispatch<React.SetStateAction<boolean>>;
+  setViewContentsBrowser: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const contentBrowserVariant = {
     initial: { opacity: 0, scale: 0.5 },
@@ -104,7 +104,7 @@ const ContentsBrowser = (props: {
   };
   return (
     <motion.div
-      className="fixed bottom-0 left-0 right-0 top-0 z-50 flex flex-row items-center justify-center rounded-2xl bg-neutral-400/30"
+      className="fixed bottom-0 left-0 right-0 top-0 z-50 flex flex-row items-center justify-center rounded-2xl bg-neutral-400/20"
       variants={defaultVariants}
       initial="initial"
       animate="animate"
@@ -122,7 +122,7 @@ const ContentsBrowser = (props: {
               <FolderIcon />
               <h1 className="text-md select-none font-bold">Contents Browser</h1>
             </div>
-            <RightButtons setViewContentBrowser={props.setViewContentBrowser} />
+            <RightButtons setViewContentBrowser={props.setViewContentsBrowser} />
           </div>
           <div className="m-1.5 h-full rounded-lg bg-neutral-200/50 p-1.5">
             <UpperDir />

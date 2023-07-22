@@ -1,5 +1,5 @@
 interface IPost {
-  curBlog: Blog;
+  curBlog: IBlog;
   curCategory: string | "";
   curTitle: string | "";
   curDate: string | "";

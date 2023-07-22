@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-export function blogsLoader(): Blog[] {
+export function blogsLoader(): IBlog[] {
   return [
     {
       logoUrl: "https://avatars.githubusercontent.com/in/715?s=48&v=4",
@@ -25,6 +25,6 @@ export function blogsLoader(): Blog[] {
   ];
 }
 
-const BlogsContext = createContext<Blog[]>(blogsLoader());
+const BlogsContext = createContext<IBlog[]>(blogsLoader());
 
 export default BlogsContext;

@@ -10,7 +10,7 @@ import { editor } from "monaco-editor";
 import { v4 as uuid } from "uuid";
 import Writer from "./Writer/Writer";
 
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useContext, useMemo, useState } from "react";
 import HierarchicalInfo from "./HierarchicalInfo";
 import defaultVariants from "../../variants/defaultVariants";
 import {
@@ -20,8 +20,11 @@ import {
   SettingsIconWithTooltip,
   SubmitIconWithTooltip,
 } from "../Icons/IconsWithTooltip";
+import GlobalStateContext from "../../contexts/GlobalStateContext";
 
-const BlogIcon = (props: { curBlogLogoUrl: string }) => {
+const BlogIcon = () => {
+  const { logoUrl: curBlogLogoUrl } =
+    useContext(GlobalStateContext).curPost.curBlog;
   return (
     <AnimatePresence>
       <motion.span
@@ -32,7 +35,7 @@ const BlogIcon = (props: { curBlogLogoUrl: string }) => {
         whileHover="whileHover"
         exit="exit"
       >
-        <img src={props.curBlogLogoUrl} className="rounded-md" />
+        <img src={curBlogLogoUrl} className="rounded-md" />
       </motion.span>
     </AnimatePresence>
   );
@@ -64,13 +67,8 @@ const RightButtons = memo(
 
 const Header = memo(
   (props: {
-    curBlogLogoUrl: string;
-    curBlogName: string;
-    curCategory: string;
-    curTitle: string;
     setWritingPost: React.Dispatch<React.SetStateAction<boolean>>;
   }) => {
-    // const s = useMemo(() => props.setWritingPost, []);
     return (
       <AnimatePresence>
         <motion.div
@@ -84,12 +82,8 @@ const Header = memo(
           exit="exit"
         >
           <div key={uuid()} className=" flex flex-row items-center">
-            <BlogIcon curBlogLogoUrl={props.curBlogLogoUrl} />
-            <HierarchicalInfo
-              curBlogName={props.curBlogName}
-              curCategory={props.curCategory}
-              curTitle={props.curTitle}
-            />
+            <BlogIcon />
+            <HierarchicalInfo />
           </div>
           <RightButtons setWritingPost={props.setWritingPost} key={uuid()} />
         </motion.div>
@@ -100,8 +94,6 @@ const Header = memo(
 
 const HeaderContentForWriting = memo(
   (props: {
-    curPost: IPost;
-    setCurPost: React.Dispatch<React.SetStateAction<IPost>>;
     setWritingPost: React.Dispatch<React.SetStateAction<boolean>>;
   }) => {
     return (
@@ -116,13 +108,9 @@ const HeaderContentForWriting = memo(
         exit={{ opacity: 0, y: "-2rem", transition: { duration: 0.5 } }}
       >
         <Header
-          curBlogLogoUrl={props.curPost.curBlog.logoUrl}
-          curBlogName={props.curPost.curBlog.name}
-          curCategory={props.curPost.curCategory}
-          curTitle={props.curPost.curTitle}
           setWritingPost={props.setWritingPost}
         />
-        <Writer setCurPost={props.setCurPost} />
+        <Writer />
       </motion.div>
     );
   }

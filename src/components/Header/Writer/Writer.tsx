@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { editor } from "monaco-editor";
-import { memo, useEffect, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import Editor from "@monaco-editor/react";
 import * as runtime from "react/jsx-runtime";
@@ -16,10 +16,9 @@ import rehypeMdxCodeProps from "rehype-mdx-code-props";
 import remarkGfm from "remark-gfm";
 
 import monacoConfig from "./MonacoEditor/MonacoConfig";
+import GlobalStateContext from "../../../contexts/GlobalStateContext";
 
-export default function Writer(props: {
-  setCurPost: React.Dispatch<React.SetStateAction<IPost>>;
-}) {
+export default function Writer() {
   function makeMdx(newMdx: string) {
     const { default: compiledMdx, frontmatter } = evaluateSync(newMdx, {
       ...(runtime as any),
@@ -35,9 +34,14 @@ export default function Writer(props: {
     const content = compiledMdx({
       components,
     });
+    const frontmatterWithProperties = frontmatter as {
+      title?: string;
+      date?: string;
+      description?: string;
+    };
     return {
       content,
-      frontmatter,
+      frontmatter: frontmatterWithProperties,
     };
   }
 
@@ -87,7 +91,7 @@ for (let i = 1; i <= 100; i++) {
 }
 \`\`\`
 `;
-  const { setCurPost } = props;
+  const { setCurPost } = useContext(GlobalStateContext);
   const initialCompiledMdx = makeMdx(initialMdx);
   const [mdxHasProblem, setMdxHasProblem] = useState<boolean>(false);
 

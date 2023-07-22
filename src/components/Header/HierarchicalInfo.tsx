@@ -1,7 +1,8 @@
 import { AnimatePresence, Variants, motion } from "framer-motion";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useContext, useMemo, useState } from "react";
 import { v4 as uuid } from "uuid";
 import RightArrow from "./RightArrow";
+import GlobalStateContext from "../../contexts/GlobalStateContext";
 
 interface IHierarchicalInfo {
   curTitle: string;
@@ -80,8 +81,10 @@ const HiearchicalBox = memo((props: { boxName: string; boxValue: string }) => {
   );
 });
 
-function HierarchicalInfo(props: IHierarchicalInfo) {
-  const { curTitle, curBlogName, curCategory } = props;
+function HierarchicalInfo() {
+  const globalState = useContext(GlobalStateContext);
+  const { name: curBlogName } = globalState.curPost.curBlog;
+  const { curCategory, curTitle } = globalState.curPost;
 
   return (
     <AnimatePresence>

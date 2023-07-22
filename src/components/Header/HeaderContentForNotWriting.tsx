@@ -1,11 +1,13 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useContext } from "react";
 import { v4 as uuid } from "uuid";
+import ShowNavBarContext from "../../contexts/ShowNavBarContext";
 
 export default function HeaderContentForNotWriting(props: {
-  setShowNavBar: React.Dispatch<React.SetStateAction<boolean>>;
   setWritingPost: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { setShowNavBar, setWritingPost } = props;
+  const { setWritingPost } = props;
+  const { setIsShowNavBar } = useContext(ShowNavBarContext);
   return (
     <motion.div
       className={`flex w-full flex-col items-center justify-center`}
@@ -20,7 +22,7 @@ export default function HeaderContentForNotWriting(props: {
         <div className={`flex w-full flex-row items-center justify-start`}>
           {/* https://www.svgrepo.com/svg/510067/menu */}
           <svg
-            onClick={() => setShowNavBar(true)}
+            onClick={() => setIsShowNavBar(true)}
             className="ml-3 h-9 w-9 cursor-pointer p-1"
             xmlns="http://www.w3.org/2000/svg"
             width="800"

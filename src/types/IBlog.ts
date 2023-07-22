@@ -1,4 +1,4 @@
-interface Blog {
+interface IBlog {
   name: string;
   logoUrl: string;
   blogUrl:string,

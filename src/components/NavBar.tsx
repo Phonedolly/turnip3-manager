@@ -2,13 +2,12 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import BlogsContext from "../contexts/BlogsContext";
 import { motion } from "framer-motion";
+import GlobalStateContext from "../contexts/GlobalStateContext";
+import ShowNavBarContext from "../contexts/ShowNavBarContext";
 
-export default function NavBar(props: {
-  showNavBar: boolean;
-  setShowNavBar: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
-  const { showNavBar, setShowNavBar } = props;
-  const blogs = useContext(BlogsContext);
+export default function NavBar() {
+  const { showNavBar, setIsShowNavBar } = useContext(ShowNavBarContext);
+  const { blogs } = useContext(GlobalStateContext);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -18,7 +17,7 @@ export default function NavBar(props: {
         ref.current !== null &&
         !ref.current.contains(e.target as Node)
       ) {
-        setShowNavBar(false);
+        setIsShowNavBar(false);
       }
     }
     document.addEventListener("mousedown", handleOutsideClose);
@@ -67,7 +66,7 @@ export default function NavBar(props: {
       </div>
       <motion.div
         className="flex w-10/12 cursor-pointer flex-row items-center justify-start gap-3 rounded-md py-3 pl-5 duration-150 hover:bg-neutral-300/30"
-        onClick={() => setShowNavBar(false)}
+        onClick={() => setIsShowNavBar(false)}
       >
         <svg
           className="h-6 w-6"
@@ -90,7 +89,7 @@ export default function NavBar(props: {
       </motion.div>
       {blogs.map((blog) => (
         <motion.div
-          onClick={() => setShowNavBar(false)}
+          onClick={() => setIsShowNavBar(false)}
           className="flex w-10/12 cursor-pointer flex-row items-center justify-start gap-3 rounded-md py-2.5 pl-5 transition-colors duration-150 hover:bg-neutral-300/30"
           key={uuid()}
         >

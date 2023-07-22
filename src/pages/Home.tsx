@@ -2,9 +2,10 @@ import { useContext } from "react";
 import { v4 as uuid } from "uuid";
 import BlogsContext from "../contexts/BlogsContext";
 import { motion } from "framer-motion";
+import GlobalStateContext from "../contexts/GlobalStateContext";
 
 export function Home() {
-  const blogs = useContext(BlogsContext);
+  const { blogs } = useContext(GlobalStateContext);
   return (
     <div className="mx-auto flex flex-col items-center px-12 py-3">
       <div className="flex w-full select-none flex-row items-center justify-start">

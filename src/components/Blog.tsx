@@ -11,6 +11,7 @@ import Popup from "./Popup";
 import BlogContext from "../contexts/BlogContext";
 import CloseIcon from "./Icons/CloseIcon";
 import IconWithTooltip from "./Icons/IconWithTooltip";
+import { invoke } from "@tauri-apps/api";
 
 const springVariant = { type: "spring", duration: 0.5 };
 
@@ -109,6 +110,7 @@ export default function Blog(props: { blog: IBlog }) {
             }}
             transition={springVariant}
             onClick={() => {
+              invoke('test');
               // setTransitioning(true);
               setOpenBlog(!openBlog);
             }}

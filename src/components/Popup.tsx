@@ -19,7 +19,7 @@ const popupVariant = {
 
 const HeaderRightButtonsWithClose = (props: {
   setViewContentBrowser: React.Dispatch<React.SetStateAction<boolean>>;
-  buttons?: JSX.Element[];
+  buttons?: JSX.Element[] | undefined;
 }) => {
   return (
     <div className="flex flex-col items-center">
@@ -33,12 +33,21 @@ const HeaderRightButtonsWithClose = (props: {
 };
 
 export default function Popup(props: {
-  headerIcon: JSX.Element;
+  headerIcon: JSX.Element | string;
   title: string;
-  headerRightIcons: JSX.Element[];
+  headerRightIcons?: JSX.Element[];
   children: JSX.Element;
   setIsShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  let stabilizedHeaderIcon: JSX.Element | string;
+  if (typeof props.headerIcon === "string") {
+    stabilizedHeaderIcon = (
+      <img className="h-9 w-9 p-1" src={props.headerIcon} />
+    );
+  } else {
+    stabilizedHeaderIcon = props.headerIcon;
+  }
+
   return (
     <motion.div
       className="fixed bottom-0 left-0 right-0 top-0 z-50 flex flex-row items-center justify-center rounded-2xl bg-neutral-400/20"
@@ -56,7 +65,7 @@ export default function Popup(props: {
         <div className="flex h-full w-full flex-col px-2 py-1.5">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center">
-              {props.headerIcon}
+              {stabilizedHeaderIcon}
               <h1 className="text-md select-none font-bold">{props.title}</h1>
             </div>
             <HeaderRightButtonsWithClose

@@ -30,8 +30,8 @@ const IconWithTooltip = (props: {
               y: "-0.5rem",
             }}
           >
-            <div className="absolute top-0.5 rounded-lg bg-neutral-50 px-2.5 py-1  text-center text-xs text-neutral-700 shadow-[0px_1.8px_10px_2.5px_rgba(0,0,0,0.2)]">
-              <h1 className="font-bold">{props.tooltipValue}</h1>
+            <div className="rounded-lg bg-neutral-50 px-2.5 py-1  text-center text-xs text-neutral-700 shadow-[0px_1.8px_10px_2.5px_rgba(0,0,0,0.2)]">
+              <h1 className="whitespace-pre font-bold">{props.tooltipValue}</h1>
             </div>
           </motion.span>
         ) : null}

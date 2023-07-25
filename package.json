@@ -13,6 +13,7 @@
     "@mdx-js/mdx": "^2.3.0",
     "@mdx-js/react": "^2.3.0",
     "@monaco-editor/react": "^4.5.1",
+    "@tanstack/react-query": "^4.32.0",
     "@tauri-apps/api": "^1.4.0",
     "@types/mdx": "^2.0.5",
     "framer-motion": "^10.12.21",
@@ -31,6 +32,7 @@
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^4.29.25",
     "@tauri-apps/cli": "^1.4.0",
     "@types/node": "^18.7.10",
     "@types/react": "^18.0.15",
